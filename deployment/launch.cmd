@@ -1,0 +1,1 @@
+powershell -ExecutionPolicy ByPass -File .\deploy-service.ps1

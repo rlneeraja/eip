@@ -1,0 +1,8 @@
+{
+  "source": {
+    "systemId": "AIMS-1"
+  }
+  "payload": {
+    "content": "MSH|^~\\\\&|SendAppName^2.16.840.1.114222.TBD^ISO|Sending-Facility^2.16.84"
+  }
+}

@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: EIPMessage-ROUTING
+
+datasource:
+      driverClassName: org.h2.Driver
+      url: jdbc:h2:mem:testdb
+      username: sa
+      password:
+
+jpa:
+    show-sql: true
+    hibernate:
+      dialect: org.hibernate.dialect.H2Dialect
+      
+      
+rabbitmq:
+    host: 10.32.1.132
+    port: 5672
+    username: admin
+    password: admin
+server:
+  apiContext:
+  versionContext: v
+  port: 8081
+  context-path: /routing-services
+
+---
+
+spring:
+  profiles: qa
+
+  datasource:
+    url: jdbc:sqlserver://eipaimsdev.cen6jdqxqcal.us-east-1.rds.amazonaws.com;database=EIP_QA_v8_5;encrypt=true;trustServerCertificate=true
+  jpa:
+    show-sql: false
+
+  rabbitmq:
+    host: 10.32.1.130
