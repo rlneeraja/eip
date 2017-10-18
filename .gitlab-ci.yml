@@ -1,0 +1,47 @@
+# Build JAVA applications using Apache Maven (http://maven.apache.org)
+# For docker image tags see https://hub.docker.com/_/maven/
+#
+# For general lifecycle information see https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
+#
+# This template will build and test your projects as well as create the documentation.
+#
+# * Caches downloaded dependencies and plugins between invocation.
+# * Does only verify merge requests but deploy built artifacts of the
+#   master branch.
+# * Shows how to use multiple jobs in test stage for verifying functionality
+#   with multiple JDKs.
+# * Uses site:stage to collect the documentation for multi-module projects.
+# * Publishes the documentation for `master` branch.
+
+# Cache downloaded dependencies and plugins between builds.
+# To keep cache across branches add 'key: "$CI_JOB_REF_NAME"'
+cache:
+  paths:
+    - .m2/repository
+
+stages:
+  - build
+  - test
+
+build:
+  stage: build
+  script:
+    - 'mvn package -B'
+    - 'mvn package sonar:sonar -Dsonar.host.url=http://eip.sandbox.aimsplatform.net:9000' 
+  only:
+    - master
+  artifacts:
+    paths:
+      - target/staging
+  image: maven:3.3.9-jdk-8
+  
+test:
+  stage: test
+  script:
+    - 'mvn test'
+  only:
+    - master
+  artifacts:
+    paths:
+      - target/staging
+  image: maven:3.3.9-jdk-8

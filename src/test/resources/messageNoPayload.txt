@@ -1,0 +1,22 @@
+{
+  "metadata": {
+    "version": "1.0"
+  },
+  "source": {
+    "system": "MIRTH",
+    "systemLocation": "AIMS",
+    "systemId": "AIMS-1",
+    "messageIdentifier": "aims-0056",
+    "receivedTime": "2017-05-12T23:15:50.2Z",
+    "receivedFrom": {
+      "system": "PHIMS",
+      "systemLocation": "GA",
+      "systemId": "PHIN_MS",
+      "messageIdentifier": "phinms-ga-13-003",
+      "receivedTime": "2017-05-12T23:20:50.52Z",
+      "sender": "",
+      "recipient": ""
+    }
+  }
+}
+

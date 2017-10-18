@@ -1,0 +1,12 @@
+# Server Properties
+# -----------------
+server.port=8080
+server.contextPath=/api
+server.apiContext=api
+server.versionContext=v
+spring.profiles.active=dev
+
+
+docker run -it --rm --link friendly_hawking:mongo mongo mongo -u admin -p admin --authenticationDatabase admin friendly_hawking
+
+

@@ -1,0 +1,16 @@
+
+serverRootURL: http://localhost:8081
+
+server:
+  apiContext: api
+  versionContext: v
+  port: 8081
+
+summary: Test applications
+docs: http://localhost:8080/docs
+versions:
+  - v1
+
+
+
+

@@ -1,0 +1,23 @@
+spring:
+
+summary: REST Services to receive EIP messages. This service is payload agnostic. It is only interested in receiving
+         messages and route them as Good messages (parseable payload following the EIPMessage schema) or bad messages
+          that should end up as Dead Letters. EIPMessages that do not contain content end up as Dead Letter as well.
+docs: http://localhost:8080/docs
+versions:
+ - v1
+contacts:
+  -
+    name: Neeraja Lakshmipathy
+    email: ide9@cdc.gov
+    role: Soft. Architect
+---
+spring:
+   profiles: dev
+
+---
+spring:
+  profiles: qa
+
+versions:
+  - v1.1

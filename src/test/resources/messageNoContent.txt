@@ -1,0 +1,25 @@
+{
+  "metadata": {
+    "version": "1.0"
+  },
+  "source": {
+    "system": "MIRTH",
+    "systemLocation": "AIMS",
+    "systemId": "AIMS-1",
+    "messageIdentifier": "aims-0056",
+    "receivedTime": "2017-05-12T23:15:50.2Z",
+    "receivedFrom": {
+      "system": "PHIMS",
+      "systemLocation": "GA",
+      "systemId": "PHIN_MS",
+      "messageIdentifier": "phinms-ga-13-003",
+      "receivedTime": "2017-05-12T23:20:50.52Z",
+      "sender": "",
+      "recipient": ""
+    }
+  },
+  "payload": {
+    "content_invalid": "MSH|^~\\\\&|SendAppName^2.16.840.1.114222.TBD^ISO|Sending-Facility^2.16.840.1.114222.TBD^ISO|EIP FoodNet^2.16.840.1.114222.4.3.2.10^ISO|CDC^2.16.840.1.114222^ISO|20170615103000.1234-0500||ORU^R01^ORU_R01|MSG CTRL ID Covis 1|D|2.5.1|||||||||NOTF_ORU_v3.0^PHINProfileID^2.16.840.1.114222.4.10.3^ISO~Generic_MMG_V2.0^PHINMsgMapID^2.16.840.1.114222.4.10.4^ISO~FDD_MMG_V1.0^PHINMsgMapID^2.16.840.1.114222.4.10.4^ISO\nPID|1||COVIS CN1^^^ORDOH&2.16.840.1.114222.GENv2&ISO||~^^^^^^S||19580301|F||1002-5^American Indian or Alaska Native^CDCREC|^^^18^47635^^^^18097|||||||||||2135-2^Hispanic or Latino^CDCREC\nOBR|1|\"\"|CASE NBR COVIS 1^SendAppName^2.16.840.1.114222.TBD^ISO|68991-9^Epidemiologic Information^LN|||20170531170100|||||||||||||||20170531170100|||F||||||11545^Vibriosis^NND"
+  }
+}
+
