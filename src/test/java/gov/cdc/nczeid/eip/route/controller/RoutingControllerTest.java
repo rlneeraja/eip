@@ -1,6 +1,8 @@
 package gov.cdc.nczeid.eip.route.controller;
 
-import io.restassured.response.Response;
+import gov.cdc.nczeid.eip.route.model.Route;
+import gov.cdc.nczeid.eip.route.services.RoutingService;
+import gov.cdc.nczeid.eip.uilt.LoadJson;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,34 +13,26 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import gov.cdc.nczeid.eip.route.model.Route;
-import gov.cdc.nczeid.eip.route.services.RoutingService;
-import gov.cdc.nczeid.eip.uilt.LoadJson;
-
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.when;
-
-import java.util.List;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestPropertySource(locations="classpath:application-test.yml")
 public class RoutingControllerTest {
 
-    public static final String APPLICATION_JSON = "application/json";
+    private static final String APPLICATION_JSON = "application/json";
     @Value("${serverRootURL}")
-    private String serverURL;
+    private String serverURL ;
 
-    private String rootAPIIURL;
     private String routeEndpoint;
 
     @Autowired
     private RoutingService service;
-    
+
+
     @Before
     public void setup() throws Exception {
-        this.rootAPIIURL = serverURL + "/routing-services/v1/";
-        this.routeEndpoint = rootAPIIURL;
+        this.routeEndpoint = serverURL + "/routing-services/v1/";
     }
 
     @After
@@ -53,9 +47,9 @@ public class RoutingControllerTest {
                 .contentType(APPLICATION_JSON)
                 .body(route)
                 .when()
-                .post(this.routeEndpoint)
+                .post(this.routeEndpoint + "/route/routeMessage")
                 .then()
-                .statusCode(202);
+                .statusCode(200);
     }
   
  
