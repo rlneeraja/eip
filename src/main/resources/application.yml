@@ -22,7 +22,7 @@ rabbitmq:
 server:
   apiContext:
   versionContext: v
-  port: 8081
+  port: 100001
   context-path: /routing-services
 
 ---
