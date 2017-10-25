@@ -1,0 +1,10 @@
+{
+  "condition": "testC",
+  "createdBy": "string",
+  "createdDateTime": "2017-10-18T20:52:28.606Z",
+  "destionation": "testD",
+  "rguid": "ABCD",
+  "updateDateTime": "2017-10-18T20:52:28.606Z",
+  "updatedBy": "string",
+  "version": "string"
+}

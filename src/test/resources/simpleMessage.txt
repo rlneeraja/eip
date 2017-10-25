@@ -1,6 +1,0 @@
-{
- 	"route_id": 1,
-    "version": 1,
-    "condition": "EIP-test",
-    "destination": "EIP-Test-Queue",
-}

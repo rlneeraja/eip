@@ -26,13 +26,13 @@ public class SwaggerConfig {
 	
     ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-            .title("Validator API")
-            .description("Validates Hl7 pipe messages per Conformance Profile")
+            .title("Routing Service")
+            .description("Enables CRUD on Route object and Routes messages to approproate RabbitMQ queues")
             .license("")
             .licenseUrl("http://unlicense.org")
             .termsOfServiceUrl("")
             .version("1.0.0")
-            .contact(new Contact("","", ""))
+            .contact(new Contact("EIP Team","", "eipteam@cdc.gov"))
             .build();
     }
 

@@ -1,4 +1,4 @@
-package gov.cdc.nczeid.eip.uilt;
+package gov.cdc.nczeid.eip.utils;
 
 import com.google.gson.Gson;
 

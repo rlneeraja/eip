@@ -11,18 +11,17 @@ import java.util.HashMap;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 
 @Service
-public class RoutingService {
+public class RoutingService  {
 
-    @Autowired
-    private RouteRepo repo;
-    
     HashMap<String, String> routesMap = new  HashMap<String, String>();
     
-    
+    @Autowired
+    RouteRepo repo;
     /**
    	 * @Load files
    	 */
@@ -31,12 +30,13 @@ public class RoutingService {
     	Iterable<Route> routes = repo.findAll();
     	routes.forEach(
     			r -> {
-    				routesMap.put(r.getCondition(), r.getDestionation());
+    				routesMap.put(r.getCondition(), r.getDestination());
     			}
     			);
     }
 
     public HashMap<String, String> getRoutesMap() {
+    	init();
  		return routesMap;
  	}
 
@@ -46,16 +46,15 @@ public class RoutingService {
  	
     private Gson gson = new Gson();
 
-
-    public String save(Route route) {
-        Route saved =  repo.save(route);
-        return saved.getRguid();
-    }
     
     public Iterable<Route> getAll() {
         return repo.findAll();
     }
 
+    public Route save(Route route) {
+        return repo.save(route);
+    }
+    
     public Route findByRguid(String rguid) {
         Route route = repo.findByRguid(rguid);
         if (route != null) {
@@ -63,4 +62,11 @@ public class RoutingService {
         }
         return null;
     }
+    
+    public boolean routeExist(String destination) {
+        Route route = repo.findByDestination(destination);
+        return route == null ? true:false;
+    }
+    
+   
 }
