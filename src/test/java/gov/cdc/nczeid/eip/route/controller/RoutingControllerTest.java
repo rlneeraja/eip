@@ -64,20 +64,20 @@ public class RoutingControllerTest {
   
  
     
- // save duplicate messsage
-    @Test
-    public void testSaveDuplicate() throws Exception {
-    	 Route route = LoadJson.readJson("createRoute.txt");
-         given()
-                 .contentType(APPLICATION_JSON)
-                 .body(route)
-                 .when()
-                 .post(this.routeEndpoint)
-                 .then()
-                 .statusCode(409);
-                // .statusCode(200);
-        
-    }
+// // save duplicate messsage
+//    @Test
+//    public void testSaveDuplicate() throws Exception {
+//    	 Route route = LoadJson.readJson("createRoute.txt");
+//         given()
+//                 .contentType(APPLICATION_JSON)
+//                 .body(route)
+//                 .when()
+//                 .post(this.routeEndpoint)
+//                 .then()
+//                 .statusCode(409);
+//                // .statusCode(200);
+//        
+//    }
     // Tests for findAll
     @Test
     public void testgetAllRoutes() {
