@@ -1,49 +1,72 @@
-spring:
-  application:
-    name: EIPMessage-ROUTING
-    
-datasource:
-      url: jdbc:sqlserver://eipaimsdev.cen6jdqxqcal.us-east-1.rds.amazonaws.com;database=EIP_Latest,1433;encrypt=true;trustServerCertificate=true
-      username: eipaimsdev
-      password: 0yO2vcyKwdBdLacv
-      driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
-jpa:
-    show-sql: true
-    hibernate:
-      dialect: org.hibernate.dialect.SQKLServer2016Dialect
 
-#datasource:
-#      driverClassName: org.h2.Driver
-#      url: jdbc:h2:mem:testdb
-#      username: sa
-#      password:
-#
-#jpa:
-#    show-sql: true
-#    hibernate:
-#      dialect: org.hibernate.dialect.H2Dialect
-      
-      
-rabbitmq:
-    host: 10.32.1.132
-    port: 5672
-    username: admin
-    password: admin
 server:
   apiContext:
   versionContext: v
   port: 10001
   context-path: /routing-services
 
+spring:
+  application:
+    name: ROUTING
+
+  profiles:
+      active: ${SPRING.PROFILE}
+
+  datasource:
+      driverClassName: org.h2.Driver
+      url: jdbc:h2:mem:testdb
+      username: sa
+      password:
+
+  jpa:
+    show-sql: true
+    hibernate:
+      dialect: org.hibernate.dialect.H2Dialect
+      
+      
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guuest
+
+
 ---
 
 spring:
-  profiles: qa
+  profiles: INT
 
   datasource:
-    url: jdbc:sqlserver://eipaimsdev.cen6jdqxqcal.us-east-1.rds.amazonaws.com;database=EIP_QA_v8_5;encrypt=true;trustServerCertificate=true
+      url: jdbc:sqlserver://eipaimsdev.cen6jdqxqcal.us-east-1.rds.amazonaws.com;database=EIP_Latest:1433;encrypt=true;trustServerCertificate=true
+      username: eipaimsdev
+      password: 0yO2vcyKwdBdLacv
+      driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+  jpa:
+    show-sql: true
+    hibernate:
+      dialect: org.hibernate.dialect.SQKLServer2016Dialect
+
+  rabbitmq:
+    host: 10.32.1.132
+    port: 5672
+    username: admin
+    password: admin
+
+
+
+
+---
+spring:
+  profiles: QA
+
+  datasource:
+    url: jdbc:sqlserver://eipaimsdev.cen6jdqxqcal.us-east-1.rds.amazonaws.com;database=EIP_QA:1433;encrypt=true;trustServerCertificate=true
   jpa:
     show-sql: false
 
   rabbitmq:
     host: 10.32.1.130
+    port: 5672
+    username: admin
+    password: admin
+
