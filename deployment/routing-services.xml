@@ -1,6 +1,6 @@
 <service>
-    <id>Routing-services</id>
-    <name>Routing Services</name>
+    <id>routing-services</id>
+    <name>EIP Routing Services</name>
     <description>This runs the routing Spring Boot based application as a Service.</description>
     <env name="MYAPP_HOME" value="%BASE%"/>
     <executable>java</executable>
