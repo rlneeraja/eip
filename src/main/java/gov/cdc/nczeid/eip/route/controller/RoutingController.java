@@ -21,6 +21,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -43,7 +44,8 @@ public class RoutingController {
     	String routedTo = "";
     	try {
         	// get the condition and queue map
-        	HashMap<String, String> rtMap = routingService.getRoutesMap();
+    		
+        	Map<String, String> rtMap = routingService.getRoutesMap();
         	if(rtMap != null && !rtMap.isEmpty()){
         		routedTo = rtMap.get(condition);
         		eventSender.send(rtMap.get(condition), mguid);

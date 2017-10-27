@@ -1,5 +1,5 @@
 
-serverRootURL: http://localhost:100001
+serverRootURL: http://localhost:10001
 
 spring:
   application:

@@ -7,10 +7,12 @@ import gov.cdc.nczeid.eip.route.repository.RouteRepo;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +20,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class RoutingService  {
 
-    HashMap<String, String> routesMap = new  HashMap<String, String>();
+    Map<String, String> routesMap = new  HashMap<String, String>();
+    
+    public Iterable<Route> routes ;
     
     @Autowired
     RouteRepo repo;
@@ -26,8 +30,9 @@ public class RoutingService  {
    	 * @Load files
    	 */
     @PostConstruct
+    @Cacheable("routes")
     public void init() {
-    	Iterable<Route> routes = repo.findAll();
+    	routes = repo.findAll();
     	routes.forEach(
     			r -> {
     				routesMap.put(r.getCondition(), r.getDestination());
@@ -35,18 +40,14 @@ public class RoutingService  {
     			);
     }
 
-    public HashMap<String, String> getRoutesMap() {
-    	init();
+    public Map<String, String> getRoutesMap() {
  		return routesMap;
  	}
 
- 	public void setRoutesMap(HashMap<String, String> routesMap) {
+ 	public void setRoutesMap(Map<String, String> routesMap) {
  		this.routesMap = routesMap;
  	}
  	
-    private Gson gson = new Gson();
-
-    
     public Iterable<Route> getAll() {
         return repo.findAll();
     }
