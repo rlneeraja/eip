@@ -4,6 +4,6 @@
     <description>This runs the routing Spring Boot based application as a Service.</description>
     <env name="MYAPP_HOME" value="%BASE%"/>
     <executable>java</executable>
-    <arguments>-Xmx256m -Dspring.profiles.active=qa -jar "%BASE%\routing-services.jar"</arguments>
+    <arguments>-Xmx256m -jar "%BASE%\routing-services.jar"</arguments>
     <logmode>rotate</logmode>
 </service>
