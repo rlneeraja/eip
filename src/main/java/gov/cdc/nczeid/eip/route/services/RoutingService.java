@@ -1,11 +1,5 @@
 package gov.cdc.nczeid.eip.route.services;
 
-import com.google.gson.Gson;
-
-import gov.cdc.nczeid.eip.route.model.Route;
-import gov.cdc.nczeid.eip.route.repository.RouteRepo;
-
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,8 +7,10 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
+
+import gov.cdc.nczeid.eip.route.model.Route;
+import gov.cdc.nczeid.eip.route.repository.RouteRepo;
 
 
 @Service
