@@ -37,13 +37,13 @@ spring:
   profiles: INT
 
   datasource:
-      url: jdbc:sqlserver://eipaimsdev.cen6jdqxqcal.us-east-1.rds.amazonaws.com;database=EIP_Latest:1433;encrypt=true;trustServerCertificate=true
-      username: eipaimsdev
-      password: 0yO2vcyKwdBdLacv
-      driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    url: jdbc:sqlserver://eipaimsdev.cen6jdqxqcal.us-east-1.rds.amazonaws.com;database=EIP_Latest:1433;encrypt=true;trustServerCertificate=true
+    username: eipaimsdev
+    password: 0yO2vcyKwdBdLacv
+    driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
   jpa:
     show-sql: true
-    hibernate:
+    hibernate: 
       dialect: org.hibernate.dialect.SQKLServer2016Dialect
 
   rabbitmq:
@@ -61,8 +61,13 @@ spring:
 
   datasource:
     url: jdbc:sqlserver://eipaimsdev.cen6jdqxqcal.us-east-1.rds.amazonaws.com;database=EIP_QA:1433;encrypt=true;trustServerCertificate=true
+    username: eipaimsdev
+    password: 0yO2vcyKwdBdLacv
+    driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
   jpa:
     show-sql: false
+    hibernate: 
+      dialect: org.hibernate.dialect.SQKLServer2016Dialect
 
   rabbitmq:
     host: 10.32.1.130
