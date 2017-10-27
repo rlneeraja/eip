@@ -1,17 +1,27 @@
 spring:
   application:
     name: EIPMessage-ROUTING
-
+    
 datasource:
-      driverClassName: org.h2.Driver
-      url: jdbc:h2:mem:testdb
-      username: sa
-      password:
-
+      url: jdbc:sqlserver://eipaimsdev.cen6jdqxqcal.us-east-1.rds.amazonaws.com;database=EIP_Latest,1433;encrypt=true;trustServerCertificate=true
+      username: eipaimsdev
+      password: 0yO2vcyKwdBdLacv
+      driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
 jpa:
     show-sql: true
     hibernate:
-      dialect: org.hibernate.dialect.H2Dialect
+      dialect: org.hibernate.dialect.SQKLServer2016Dialect
+
+#datasource:
+#      driverClassName: org.h2.Driver
+#      url: jdbc:h2:mem:testdb
+#      username: sa
+#      password:
+#
+#jpa:
+#    show-sql: true
+#    hibernate:
+#      dialect: org.hibernate.dialect.H2Dialect
       
       
 rabbitmq:
@@ -22,7 +32,7 @@ rabbitmq:
 server:
   apiContext:
   versionContext: v
-  port: 8081
+  port: 10001
   context-path: /routing-services
 
 ---

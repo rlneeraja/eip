@@ -22,7 +22,7 @@ public class Route {
     @Column(name="Condition", nullable = false)
     private String condition;
     @Column(name="Destionation")
-    private String destionation;
+    private String destination;
     @Column(name="created_datetime")
     private Date createdDateTime;
     @Column(name="update_datetime")
