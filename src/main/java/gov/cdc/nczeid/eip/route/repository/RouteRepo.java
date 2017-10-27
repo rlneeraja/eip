@@ -13,7 +13,7 @@ public interface RouteRepo extends CrudRepository<Route, String> {
 //	 RETURN actor.name
 //	 public Route findByDestination(String destination);
 //	 
-	 @Query("SELECT r FROM Route r WHERE r.destination = ?")
-	 public Route findByDestination(String destination);
+	 //@Query("SELECT r FROM Route r WHERE r.destination = ?")
+	  Route findByDestination(String destination);
 	 
 }
