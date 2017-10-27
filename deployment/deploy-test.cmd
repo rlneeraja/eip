@@ -1,0 +1,1 @@
+powershell -ExecutionPolicy ByPass -File .\deploy-service.ps1 "ec2amaz-8rh1kfc"
