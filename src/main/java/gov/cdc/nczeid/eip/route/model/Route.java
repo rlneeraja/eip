@@ -15,7 +15,7 @@ public class Route {
     @Id
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
-    @Column(name="rguid", nullable = false, unique = true)
+    @Column(name="Route_id", nullable = false, unique = true)
     private String rguid;
     @Column(name="Version")
     private String version;
