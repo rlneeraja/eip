@@ -16,13 +16,16 @@ public class Route {
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     @Column(name="Route_id", nullable = false, unique = true)
-    private String rguid;
-    @Column(name="Version")
-    private String version;
+    private String routeId;
+    @Version
+    @Column(name="Version", columnDefinition = "integer DEFAULT 0", nullable = false)
+    private Integer version;
     @Column(name="Condition", nullable = false)
     private String condition;
     @Column(name="Destionation")
     private String destination;
+    @Column(name="Active")
+    private Integer active = 1;
     @Column(name="created_datetime")
     private Date createdDateTime;
     @Column(name="update_datetime")

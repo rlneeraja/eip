@@ -26,7 +26,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("/route")
 @ApiVersion({1})
 @CrossOrigin
 public class RoutingController {
@@ -39,12 +38,11 @@ public class RoutingController {
     @Autowired
     private EventSender eventSender;
     
-    @RequestMapping(value = "/routeMessage/{condition},{mguid}", method = GET)
-    public ResponseEntity routeMessage(@PathVariable String condition, @PathVariable String mguid , HttpServletRequest request)  {
+    @RequestMapping(value = "/routeMessage/{condition}/{mguid}", method = GET)
+    public ResponseEntity routeMessage(@RequestParam String condition, @RequestParam String mguid , HttpServletRequest request)  {
     	String routedTo = "";
     	try {
         	// get the condition and queue map
-    		
         	Map<String, String> rtMap = routingService.getRoutesMap();
         	if(rtMap != null && !rtMap.isEmpty()){
         		routedTo = rtMap.get(condition);
@@ -62,19 +60,18 @@ public class RoutingController {
             return ResponseEntity.status(HttpStatus.ACCEPTED).body("Message with guid " + mguid + " is routed to queue " + routedTo);
         } catch (Exception e) {
             log.error("exception: " + e.getMessage());
-            e.printStackTrace(); 
             ErrorResponse error = new ErrorResponse(new Date(), ERROR_CODES.INTERNAL_SERVER_ERROR, "We are unable to process your request at this moment. The message has not been accepted. Please try again later or contact EIP's system administrator", request.getRequestURL().toString() , 500, e.getMessage());
 		    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         }
     }
 
-    @RequestMapping(value="/{rguid}", method = GET)
-    public ResponseEntity getRoute(@PathVariable String rguid,HttpServletRequest request) {
-        Route route = routingService.findByRguid(rguid);
+    @RequestMapping(value="/route/{routeId}", method = GET)
+    public ResponseEntity getRoute(@PathVariable String routeId,HttpServletRequest request) {
+        Route route = routingService.findByRouteId(routeId);
         if (route != null) {
             return ResponseEntity.ok(route);
         } else {
-        	 ErrorResponse error = new ErrorResponse(new Date(), ERROR_CODES.NOT_FOUND, "Message with guid " + rguid + " not found", request.getRequestURL().toString() , 500, "");
+        	 ErrorResponse error = new ErrorResponse(new Date(), ERROR_CODES.NOT_FOUND, "Message with guid " + routeId + " not found", request.getRequestURL().toString() , 500, "");
         	 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
         }
     }
@@ -89,18 +86,37 @@ public class RoutingController {
         }
     }
 
-    @RequestMapping(value = "", method = POST)
+    @RequestMapping(value = "/route", method = POST)
     public ResponseEntity save(@RequestBody Route route, HttpServletRequest request) {
     	try{
     		if(routingService.routeExist(route.getDestination())){
 	    		Route r = routingService.save(route);
-	        	return ResponseEntity.status(HttpStatus.OK).body(r.getRguid());
+	        	return ResponseEntity.status(HttpStatus.OK).body(r.getRouteId());
         	}
 	    	else{
 	    		ErrorResponse error = new ErrorResponse(new Date(), ERROR_CODES.CONFLICT, "Route Destination already defined", request.getRequestURL().toString() , 409, "");
 	       	    return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
 	        }
-	    			
+        }
+    	catch(Exception e) {
+    		ErrorResponse error = new ErrorResponse(new Date(), ERROR_CODES.INTERNAL_SERVER_ERROR, "We are unable to process your request at this moment. The message has not been accepted. Please try again later or contact EIP's system administrator", request.getRequestURL().toString() , 500, e.getMessage());
+		    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
+    }
+    
+    @RequestMapping(value = "/route/{routeId}", method = POST)
+    public ResponseEntity delete(@PathVariable String routeId, HttpServletRequest request) {
+    	try{
+    		Route route = routingService.findByRouteId(routeId);
+    		if(route.getActive() == 1){
+    			route.setActive(0);
+	    		route = routingService.save(route);
+	        	return ResponseEntity.status(HttpStatus.OK).body(route.getRouteId());
+        	}
+	    	else{
+	    		ErrorResponse error = new ErrorResponse(new Date(), ERROR_CODES.CONFLICT, "Route is already inactive", request.getRequestURL().toString() , 409, "");
+	       	    return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+	        }
         }
     	catch(Exception e) {
     		ErrorResponse error = new ErrorResponse(new Date(), ERROR_CODES.INTERNAL_SERVER_ERROR, "We are unable to process your request at this moment. The message has not been accepted. Please try again later or contact EIP's system administrator", request.getRequestURL().toString() , 500, e.getMessage());

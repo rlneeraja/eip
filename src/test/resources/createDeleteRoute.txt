@@ -1,9 +1,9 @@
 {
-  "condition": "10003",
-  "createdBy": "junit",
+  "condition": "10005",
+  "createdBy": "junit-del",
   "createdDateTime": "2017-10-18T20:52:28.606Z",
-  "destination": "junit",
+  "destination": "junit-del",
   "updateDateTime": "2017-10-18T20:52:28.606Z",
-  "updatedBy": "junit",
+  "updatedBy": "junit-del",
   "version": "1"
 }
