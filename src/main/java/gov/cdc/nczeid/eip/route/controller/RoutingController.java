@@ -2,6 +2,12 @@ package gov.cdc.nczeid.eip.route.controller;
 
 
 
+import gov.cdc.nczeid.eip.rest.ApiVersion;
+import gov.cdc.nczeid.eip.route.model.ERROR_CODES;
+import gov.cdc.nczeid.eip.route.model.ErrorResponse;
+import gov.cdc.nczeid.eip.route.model.Route;
+import gov.cdc.nczeid.eip.route.services.EventSender;
+import gov.cdc.nczeid.eip.route.services.RoutingService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,22 +15,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import gov.cdc.nczeid.eip.rest.ApiVersion;
-import gov.cdc.nczeid.eip.route.model.ERROR_CODES;
-import gov.cdc.nczeid.eip.route.model.ErrorResponse;
-import gov.cdc.nczeid.eip.route.model.Route;
-import gov.cdc.nczeid.eip.route.services.EventSender;
-import gov.cdc.nczeid.eip.route.services.RoutingService;
-
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import static org.springframework.web.bind.annotation.RequestMethod.PUT;
-
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
 @ApiVersion({1})
@@ -39,7 +34,7 @@ public class RoutingController {
     @Autowired
     private EventSender eventSender;
     
-    @RequestMapping(value = "/routeMessage", method = GET)
+    @RequestMapping(value = "/routeMessage", method = POST)
     public ResponseEntity routeMessage(@RequestParam String condition, @RequestParam String mguid , HttpServletRequest request)  {
     	String routedTo = "";
     	try {
