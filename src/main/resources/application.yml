@@ -11,17 +11,27 @@ spring:
 
   profiles:
       active: ${SPRING.PROFILE}
-
+      
   datasource:
-      driverClassName: org.h2.Driver
-      url: jdbc:h2:mem:testdb
-      username: sa
-      password:
-
+    url: jdbc:sqlserver://eipaimsdev.cen6jdqxqcal.us-east-1.rds.amazonaws.com;database=EIP_Latest;encrypt=true;trustServerCertificate=true
+    username: eipaimsdev
+    password: 0yO2vcyKwdBdLacv
+    driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
   jpa:
     show-sql: true
-    hibernate:
-      dialect: org.hibernate.dialect.H2Dialect
+    hibernate: 
+      dialect: org.hibernate.dialect.SQKLServer2016Dialect
+
+#  datasource:
+#      driverClassName: org.h2.Driver
+#      url: jdbc:h2:mem:testdb
+#      username: sa
+#      password:
+#
+#  jpa:
+#    show-sql: true
+#    hibernate:
+#      dialect: org.hibernate.dialect.H2Dialect
       
       
   rabbitmq:

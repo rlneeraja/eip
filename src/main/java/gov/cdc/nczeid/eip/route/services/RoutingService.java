@@ -52,8 +52,8 @@ public class RoutingService  {
         return repo.save(route);
     }
     
-    public Route findByRguid(String rguid) {
-        Route route = repo.findByRguid(rguid);
+    public Route findByRouteId(String rguid) {
+        Route route = repo.findByRouteId(rguid);
         if (route != null) {
             return route;
         }
