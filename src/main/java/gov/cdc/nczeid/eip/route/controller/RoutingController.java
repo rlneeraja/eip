@@ -18,6 +18,7 @@ import gov.cdc.nczeid.eip.route.services.RoutingService;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -38,7 +39,7 @@ public class RoutingController {
     @Autowired
     private EventSender eventSender;
     
-    @RequestMapping(value = "/routeMessage/{condition}/{mguid}", method = GET)
+    @RequestMapping(value = "/routeMessage", method = GET)
     public ResponseEntity routeMessage(@RequestParam String condition, @RequestParam String mguid , HttpServletRequest request)  {
     	String routedTo = "";
     	try {
@@ -104,11 +105,11 @@ public class RoutingController {
         }
     }
     
-    @RequestMapping(value = "/route/{routeId}", method = POST)
+    @RequestMapping(value = "/route/{routeId}", method = PUT)
     public ResponseEntity delete(@PathVariable String routeId, HttpServletRequest request) {
     	try{
     		Route route = routingService.findByRouteId(routeId);
-    		if(route.getActive() == 1){
+    		if(route != null && route.getActive() == 1){
     			route.setActive(0);
 	    		route = routingService.save(route);
 	        	return ResponseEntity.status(HttpStatus.OK).body(route.getRouteId());
