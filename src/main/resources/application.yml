@@ -70,7 +70,7 @@ spring:
   profiles: QA
 
   datasource:
-    url: jdbc:sqlserver://eipaimsdev.cen6jdqxqcal.us-east-1.rds.amazonaws.com;database=EIP_QA:1433;encrypt=true;trustServerCertificate=true
+    url: jdbc:sqlserver://eipaimsdev.cen6jdqxqcal.us-east-1.rds.amazonaws.com;database=EIP_QA;encrypt=true;trustServerCertificate=true
     username: eipaimsdev
     password: 0yO2vcyKwdBdLacv
     driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
