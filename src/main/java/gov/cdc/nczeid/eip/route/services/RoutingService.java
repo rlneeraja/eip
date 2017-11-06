@@ -1,7 +1,9 @@
 package gov.cdc.nczeid.eip.route.services;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 
@@ -52,7 +54,7 @@ public class RoutingService  {
         return repo.save(route);
     }
     
-    public Route findByRouteId(String rguid) {
+    public Route findByRouteId(UUID rguid) {
         Route route = repo.findByRouteId(rguid);
         if (route != null) {
             return route;
@@ -60,9 +62,9 @@ public class RoutingService  {
         return null;
     }
     
-    public boolean routeExist(String destination) {
-        Route route = repo.findByDestination(destination);
-        return route == null ? true:false;
+    public boolean routeExist(String condition, String destination) {
+        List<Route> routes = repo.findByConditionAndDestination(condition, destination);
+        return routes == null || routes.isEmpty() ? true:false;
     }
     
    
