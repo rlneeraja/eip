@@ -109,11 +109,12 @@ public class RoutingControllerTest {
     public void testDelete() {
     	 Route route = LoadJson.readJson("createDeleteRoute.txt");
     	 route = repo.save(route);
-    	 Response response = when().post(this.rootAPIIURL + "/route/" + route.getRouteId())
+    	 Response response = when().put(this.rootAPIIURL + "/route/" + route.getRouteId())
                  .then()
                  .statusCode(200)
                  .extract().response();
           response.body().prettyPrint();
+          repo.delete(route.getRouteId());
 		
     }
 
