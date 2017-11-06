@@ -27,7 +27,7 @@ build:
   stage: build
   script:
     - 'mvn package -B'
-    - 'mvn package sonar:sonar -Dsonar.host.url=http://eip.sandbox.aimsplatform.net:9000' 
+    - 'mvn package sonar:sonar -Dsonar.host.url=http://eip.sandbox.aimsplatform.net:9500' 
   only:
     - master
   artifacts:
