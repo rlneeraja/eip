@@ -6,6 +6,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.UUID;
 
 @Data
 @Entity
@@ -16,13 +17,13 @@ public class Route {
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     @Column(name="Route_id", nullable = false, unique = true)
-    private String routeId;
+    private UUID routeId;
     @Version
     @Column(name="Version", columnDefinition = "integer DEFAULT 0", nullable = false)
     private Integer version;
     @Column(name="Condition", nullable = false)
     private String condition;
-    @Column(name="Destionation")
+    @Column(name="Destination")
     private String destination;
     @Column(name="Active")
     private Integer active = 1;

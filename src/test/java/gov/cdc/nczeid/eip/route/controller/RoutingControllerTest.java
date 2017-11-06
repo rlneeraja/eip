@@ -94,11 +94,12 @@ public class RoutingControllerTest {
          response.body().prettyPrint();
     }
     
-    //    @Test
+    
+    @Test
     public void testRetrieveRouteByIDNotFound() {
         Response response = when().get(this.rootAPIIURL + "/route/YYYYYYYYYS")
                 .then()
-                .statusCode(404)
+                .statusCode(400)
                 .extract().response();
          response.body().prettyPrint();
     }
@@ -114,7 +115,8 @@ public class RoutingControllerTest {
                  .statusCode(200)
                  .extract().response();
           response.body().prettyPrint();
-          repo.delete(route.getRouteId());
+          route = repo.findByRouteId(route.getRouteId());
+          repo.delete(route);
 		
     // }
 
