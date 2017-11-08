@@ -117,7 +117,6 @@ public class RoutingControllerTest {
           response.body().prettyPrint();
           route = repo.findByRouteId(route.getRouteId());
           repo.delete(route);
-		
     }
 
 }

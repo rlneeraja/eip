@@ -9,21 +9,30 @@ import gov.cdc.nczeid.eip.route.model.Route;
 import gov.cdc.nczeid.eip.route.services.EventSender;
 import gov.cdc.nczeid.eip.route.services.RouteNotFoundException;
 import gov.cdc.nczeid.eip.route.services.RoutingService;
+import gov.cdc.nczeid.eip.utils.InputStreamUtils;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
@@ -41,7 +50,7 @@ public class RoutingController {
     private EventSender eventSender;
     
     @RequestMapping(value = "/routeMessage", method = POST)
-    public ResponseEntity routeMessage(@RequestParam String condition, @RequestParam String mguid , HttpServletRequest request) throws  Exception {
+    public ResponseEntity routeMessage(@Valid @RequestParam String condition, @RequestParam String mguid , HttpServletRequest request) throws  Exception {
     	String routedTo = "";
         	// get the condition and queue map
         	Map<String, String> rtMap = routingService.getRoutesMap();
@@ -73,7 +82,7 @@ public class RoutingController {
     }
 
     @RequestMapping(value = "/route", method = POST)
-    public ResponseEntity save(@RequestBody Route route, HttpServletRequest request)  throws  Exception{
+    public ResponseEntity save(@Valid @RequestBody Route route, HttpServletRequest request)  throws  Exception{
     		if(route == null || route.getDestination() == null || route.getDestination().isEmpty() ||  route.getCondition() == null || route.getCondition().isEmpty() ){
     			ErrorResponse error = new ErrorResponse(new Date(), ERROR_CODES.UNPROCESSABLE_ENTITY, "Route or Destination not defined", request.getRequestURL().toString() , 422, "");
 	       	    return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(error);
@@ -128,6 +137,26 @@ public class RoutingController {
     	ErrorResponse error = new ErrorResponse(new Date(), ERROR_CODES.INTERNAL_SERVER_ERROR, "We are unable to process your request at this moment. The message has not been accepted. Please try again later or contact EIP's system administrator", request.getRequestURL().toString() , 500, e.getMessage());
 	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
+    
+    @ExceptionHandler({MethodArgumentNotValidException.class})
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    @ResponseBody
+    @RequestMapping("/validatonError")
+    protected ResponseEntity<ErrorResponse> resolveValidationErrors(HttpServletRequest request, MethodArgumentNotValidException ex) {
+        log.error("Missing Required info...");
+        BindingResult result =  ex.getBindingResult();
+        List<String>  errorMessages = new ArrayList<>();
+        for( FieldError f: result.getFieldErrors()) {
+            errorMessages.add(f.getDefaultMessage());
+        }
+
+        ErrorResponse error = new ErrorResponse(new Date(), ERROR_CODES.UNPROCESSABLE_ENTITY, "Route or Destination not defined", request.getRequestURL().toString() , 422, "");
+   	   
+        error.setDetails(errorMessages.toArray());
+        return ResponseEntity.badRequest().body(error);
+
+    }
+
     
    
 }

@@ -3,8 +3,11 @@ package gov.cdc.nczeid.eip.route.model;
 
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+
 import java.util.Date;
 import java.util.UUID;
 
@@ -21,8 +24,12 @@ public class Route {
     @Version
     @Column(name="Version", columnDefinition = "integer DEFAULT 0", nullable = false)
     private Integer version;
+    @Valid
+    @NotEmpty(message="Condition can not be empty")
     @Column(name="Condition", nullable = false)
     private String condition;
+    @Valid
+    @NotEmpty(message="Destination can not be empty")
     @Column(name="Destination")
     private String destination;
     @Column(name="Active")
