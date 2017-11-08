@@ -13,6 +13,7 @@ public class ErrorResponse {
     private String path;
     private String exception;
     
+    private Object[] details;
     
     public ErrorResponse() {
     }
