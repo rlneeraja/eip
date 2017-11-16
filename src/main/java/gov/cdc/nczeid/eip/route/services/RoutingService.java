@@ -28,17 +28,17 @@ public class RoutingService  {
    	 * @Load files
    	 */
     @PostConstruct
-    @Cacheable("routes")
     public void init() {
+    	
+    }
+
+    public Map<String, String> getRoutesMap() {
     	routes = repo.findAll();
     	routes.forEach(
     			r -> {
     				routesMap.put(r.getCondition(), r.getDestination());
     			}
     			);
-    }
-
-    public Map<String, String> getRoutesMap() {
  		return routesMap;
  	}
 
@@ -63,8 +63,13 @@ public class RoutingService  {
     }
     
     public boolean routeExist(String condition, String destination) {
-        List<Route> routes = repo.findByConditionAndDestination(condition, destination);
-        return routes == null || routes.isEmpty() ? true:false;
+    	Iterable<Route> routes = repo.findByConditionAndDestination(condition, destination);
+        return routes == null ? true:false;
+    }
+    
+    
+    public Iterable<Route> getRoutesByCondition(String condition){
+    	return repo.findByCondition(condition);
     }
     
    

@@ -1,12 +1,14 @@
 package gov.cdc.nczeid.eip.route.model;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import lombok.Data;
 
 @Data
 public class ErrorResponse {
-	private Date timestamp;
+	private String timestamp;
     private ERROR_CODES errorCode;
     private String description;
     private int status;
@@ -16,10 +18,11 @@ public class ErrorResponse {
     private Object[] details;
     
     public ErrorResponse() {
+    	 this.timestamp = ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT);
     }
 
-    public ErrorResponse(Date timestamp, ERROR_CODES errorCode, String description, String path, int status, String exception) {
-        this.timestamp = timestamp;
+    public ErrorResponse(ERROR_CODES errorCode, String description, String path, int status, String exception) {
+    	this();
     	this.errorCode = errorCode;
         this.description = description;
         this.status = status;
