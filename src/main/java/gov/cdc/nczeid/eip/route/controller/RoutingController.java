@@ -27,6 +27,7 @@ import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -50,24 +51,27 @@ public class RoutingController {
     private EventSender eventSender;
     
     @RequestMapping(value = "/routeMessage", method = POST)
-    public ResponseEntity routeMessage(@Valid @RequestParam String condition, @RequestParam String mguid , HttpServletRequest request) throws  Exception {
-    	String routedTo = "";
-        	// get the condition and queue map
-        	Map<String, String> rtMap = routingService.getRoutesMap();
-        	if(rtMap != null && !rtMap.isEmpty()){
-        		routedTo = rtMap.get(condition);
-        		if(routedTo == null || routedTo.isEmpty()){
-        			ErrorResponse error = new ErrorResponse(new Date(), ERROR_CODES.UNPROCESSABLE_ENTITY, "The route for the condition code is not defined. Please try again later or contact EIP's system administrator to get the route created for condition code", request.getRequestURL().toString() , 422, "");
-         		    return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(error);
-        		}
-        		eventSender.send(rtMap.get(condition), mguid);
-        	}
-        	else{
-        		ErrorResponse error = new ErrorResponse(new Date(), ERROR_CODES.UNPROCESSABLE_ENTITY, "No Routes defined for system. Please try again later or contact EIP's system administrator to get the route created for condition code", request.getRequestURL().toString() , 422, "");
-     		    return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(error);
-        	}
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Message with guid " + mguid + " is routed to queue " + routedTo);
-    }
+	public ResponseEntity routeMessage(@Valid @RequestParam String condition, @RequestParam String mguid,
+			HttpServletRequest request) throws Exception {
+		String routedTo = "";
+		// get the condition and queue map
+		Iterable<Route> routes = routingService.getRoutesByCondition(condition);
+		if (routes != null) {
+			Iterator<Route> itRoutes = routes.iterator();
+			while (itRoutes.hasNext()) {
+				Route r = itRoutes.next();
+				if (r.getDestination() != null && !r.getDestination().isEmpty())
+					eventSender.send(condition, mguid);
+			}
+		} else {
+			ErrorResponse error = new ErrorResponse( ERROR_CODES.UNPROCESSABLE_ENTITY,
+					"No Routes defined for condition. Please try again later or contact EIP's system administrator to get the route created for condition code",
+					request.getRequestURL().toString(), 422, "");
+			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(error);
+		}
+		return ResponseEntity.status(HttpStatus.ACCEPTED)
+				.body("Message with guid " + mguid + " is routed to queue " + routedTo);
+	}
 
     @RequestMapping(value="/route/{routeId}", method = GET)
     public ResponseEntity getRoute(@PathVariable UUID routeId,HttpServletRequest request) throws RouteNotFoundException, Exception{
@@ -83,18 +87,8 @@ public class RoutingController {
 
     @RequestMapping(value = "/route", method = POST)
     public ResponseEntity save(@Valid @RequestBody Route route, HttpServletRequest request)  throws  Exception{
-    		if(route == null || route.getDestination() == null || route.getDestination().isEmpty() ||  route.getCondition() == null || route.getCondition().isEmpty() ){
-    			ErrorResponse error = new ErrorResponse(new Date(), ERROR_CODES.UNPROCESSABLE_ENTITY, "Route or Destination not defined", request.getRequestURL().toString() , 422, "");
-	       	    return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(error);
-    		}
-    		if(routingService.routeExist(route.getCondition(), route.getDestination())){
-	    		Route r = routingService.save(route);
-	        	return ResponseEntity.status(HttpStatus.OK).body(r);
-        	}
-	    	else{
-	    		ErrorResponse error = new ErrorResponse(new Date(), ERROR_CODES.CONFLICT, "Route entry already exist", request.getRequestURL().toString() , 409, "");
-	       	    return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
-	        }
+	    	Route r = routingService.save(route);
+	        return ResponseEntity.status(HttpStatus.OK).body(r);
     }
     
     @RequestMapping(value = "/route/{routeId}", method = PUT)
@@ -107,7 +101,7 @@ public class RoutingController {
 	        	return ResponseEntity.status(HttpStatus.OK).body(route);
         	}
 	    	else{
-	    		ErrorResponse error = new ErrorResponse(new Date(), ERROR_CODES.CONFLICT, "Route is already inactive", request.getRequestURL().toString() , 409, "");
+	    		ErrorResponse error = new ErrorResponse( ERROR_CODES.CONFLICT, "Route is already inactive", request.getRequestURL().toString() , 409, "");
 	       	    return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
 	        }
     }
@@ -118,7 +112,7 @@ public class RoutingController {
     @ResponseBody
     @RequestMapping("/errormessage")
     private ResponseEntity<ErrorResponse> handleParameterError(HttpServletRequest request, Exception e) {
-    	ErrorResponse error = new ErrorResponse(new Date(), ERROR_CODES.BAD_REQUEST, "Missing body with message to be processed", request.getRequestURL().toString() , 400, e.getMessage());
+    	ErrorResponse error = new ErrorResponse( ERROR_CODES.BAD_REQUEST, "Missing body with message to be processed", request.getRequestURL().toString() , 400, e.getMessage());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
@@ -126,7 +120,7 @@ public class RoutingController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @RequestMapping("/notfound")
     private ResponseEntity<ErrorResponse> handleNotFoundError(HttpServletRequest request, Exception e) {
-    	ErrorResponse error = new ErrorResponse(new Date(), ERROR_CODES.BAD_REQUEST, "Invalid Rguid Passed", request.getRequestURL().toString() , 400, e.getMessage());
+    	ErrorResponse error = new ErrorResponse( ERROR_CODES.BAD_REQUEST, "Invalid Rguid Passed", request.getRequestURL().toString() , 400, e.getMessage());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
     
@@ -134,7 +128,7 @@ public class RoutingController {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @RequestMapping("/serverError")
     public ResponseEntity<ErrorResponse> noHandlerFoundException(HttpServletRequest request, Exception e) {
-    	ErrorResponse error = new ErrorResponse(new Date(), ERROR_CODES.INTERNAL_SERVER_ERROR, "We are unable to process your request at this moment. The message has not been accepted. Please try again later or contact EIP's system administrator", request.getRequestURL().toString() , 500, e.getMessage());
+    	ErrorResponse error = new ErrorResponse( ERROR_CODES.INTERNAL_SERVER_ERROR, "We are unable to process your request at this moment. The message has not been accepted. Please try again later or contact EIP's system administrator", request.getRequestURL().toString() , 500, e.getMessage());
 	    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
     
@@ -150,7 +144,7 @@ public class RoutingController {
             errorMessages.add(f.getDefaultMessage());
         }
 
-        ErrorResponse error = new ErrorResponse(new Date(), ERROR_CODES.UNPROCESSABLE_ENTITY, "Route or Destination not defined", request.getRequestURL().toString() , 422, "");
+        ErrorResponse error = new ErrorResponse(ERROR_CODES.UNPROCESSABLE_ENTITY, "Route or Destination not defined", request.getRequestURL().toString() , 422, "");
    	   
         error.setDetails(errorMessages.toArray());
         return ResponseEntity.badRequest().body(error);

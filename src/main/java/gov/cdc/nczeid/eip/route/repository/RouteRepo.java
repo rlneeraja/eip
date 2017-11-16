@@ -17,6 +17,9 @@ public interface RouteRepo extends CrudRepository<Route, UUID> {
 	public  Route findByDestination(String destination);
 	  
 	@Query("FROM Route where condition =:condition and destination =:destination")
-	public List<Route> findByConditionAndDestination(@Param("condition") String condition, @Param("destination") String destination);
+	public Iterable<Route> findByConditionAndDestination(@Param("condition") String condition, @Param("destination") String destination);
+	 
+	@Query("FROM Route where condition =:condition")
+	public Iterable<Route> findByCondition(@Param("condition") String condition);
 	 
 }
