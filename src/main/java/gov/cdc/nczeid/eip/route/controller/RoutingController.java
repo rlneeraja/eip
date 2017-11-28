@@ -87,8 +87,15 @@ public class RoutingController {
 
     @RequestMapping(value = "/route", method = POST)
     public ResponseEntity save(@Valid @RequestBody Route route, HttpServletRequest request)  throws  Exception{
-	    	Route r = routingService.save(route);
+    	if(route.getVersion() == null && route.getRouteId() != null){
+    		ErrorResponse error = new ErrorResponse( ERROR_CODES.CONFLICT, "Route can be updated on an existing version", request.getRequestURL().toString() , 409, "");
+       	    return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    	}
+    	else{
+       	 	Route r = routingService.save(route);
 	        return ResponseEntity.status(HttpStatus.OK).body(r);
+    	}
+    		
     }
     
     @RequestMapping(value = "/route/{routeId}", method = PUT)
@@ -144,7 +151,7 @@ public class RoutingController {
             errorMessages.add(f.getDefaultMessage());
         }
 
-        ErrorResponse error = new ErrorResponse(ERROR_CODES.UNPROCESSABLE_ENTITY, "Route or Destination not defined", request.getRequestURL().toString() , 422, "");
+        ErrorResponse error = new ErrorResponse(ERROR_CODES.UNPROCESSABLE_ENTITY, "Required inputs not defined", request.getRequestURL().toString() , 422, "");
    	   
         error.setDetails(errorMessages.toArray());
         return ResponseEntity.badRequest().body(error);
