@@ -22,7 +22,7 @@ public class Route {
     @Column(name="Route_id", nullable = false, unique = true)
     private UUID routeId;
     @Version
-    @Column(name="Version", columnDefinition = "integer DEFAULT 0", nullable = false)
+    @Column(name="Version", nullable = false)
     private Integer version;
     @Valid
     @NotEmpty(message="Condition can not be empty")
