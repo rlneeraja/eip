@@ -48,7 +48,7 @@ public class GenerateSwaggerYamlTest {
     @Before
     public void setUp() throws Exception {
         this.rootAPIIURL = "http://localhost:10001"+
-        		contextPath+"/"+apiContext+ "/"+  versionContext+"/api-docs";
+        		contextPath+"/"+apiContext+ "/"+  versionContext+"2/api-docs";
     }
 	@Test
 	public void generate() throws IOException{

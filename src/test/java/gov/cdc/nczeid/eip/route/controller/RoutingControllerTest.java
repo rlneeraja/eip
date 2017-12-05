@@ -24,21 +24,33 @@ import static io.restassured.RestAssured.when;
 public class RoutingControllerTest {
 
     private static final String APPLICATION_JSON = "application/json";
-    @Value("${serverRootURL}")
-    private String serverURL ;
-    private String rootAPIIURL;
-    private String routeEndpoint;
-    
+   
     @Autowired
     public RouteRepo repo;
 
+    
+    @Value("${server.apiContext}")
+    private String apiContext;
+    
+    @Value("${server.context-path}")
+    private String contextPath;
+
+    
+    @Value("${server.versionContext}")
+    private String versionContext;
+    
+    @Value("${server.port}")
+    private String port;
+    
+    private String rootAPIIURL;
 
     @Before
-    public void setup() throws Exception {
-        this.rootAPIIURL = serverURL + "/routing-services/v1";
-        this.routeEndpoint = rootAPIIURL;
-        System.out.println(routeEndpoint);
+    public void setUp() throws Exception {
+        this.rootAPIIURL = "http://localhost:10001"+
+        		contextPath + apiContext+ "/"+  versionContext+ "1";
     }
+    
+   
 
     @After
     public void teardown() throws Exception {
@@ -47,32 +59,44 @@ public class RoutingControllerTest {
 
     }
  // save good messsage
- //   @Test
-  public void testSaveRoute() {
+  @Test
+  public void testCreateRoute() {
         Route route = LoadJson.readJson("createRoute.txt");
         given()
                 .contentType(APPLICATION_JSON)
                 .body(route)
                 .when()
-                .post(this.routeEndpoint + "/route")
+                .post(this.rootAPIIURL + "/route")
                 .then()
-                .statusCode(200);
+                .statusCode(201);
     }
 
   // save duplicate messsage
     @Test
-    public void testSaveDuplicate() throws Exception {
+    public void testCreateDuplicate() throws Exception {
     	 Route route = LoadJson.readJson("createRoute.txt");
          given()
                  .contentType(APPLICATION_JSON)
                  .body(route)
                  .when()
-                 .post(this.routeEndpoint)
+                 .post(this.rootAPIIURL + "/route")
                  .then()
                 // .statusCode(409);
-                 .statusCode(404);
+                 .statusCode(400);
         
     }
+    
+    //   @Test
+    public void testUpdateRoute() {
+          Route route = LoadJson.readJson("updateRoute.txt");
+          given()
+                  .contentType(APPLICATION_JSON)
+                  .body(route)
+                  .when()
+                  .put(this.rootAPIIURL + "/route")
+                  .then()
+                  .statusCode(201);
+      }
     
     // Tests for findAll
     @Test
@@ -87,7 +111,7 @@ public class RoutingControllerTest {
     // Tests for getby rguid
     @Test
     public void testRetrieveRouteByID() {
-        Response response = when().get(this.rootAPIIURL + "/route/B24D5F5A-5504-457D-BD7E-BB2196E85BB2")
+        Response response = when().get(this.rootAPIIURL + "/route/bde3140d-8fdf-4034-b683-00c782648ded")
                 .then()
                 .statusCode(200)
                 .extract().response();
@@ -108,14 +132,20 @@ public class RoutingControllerTest {
     @Test
     @Rollback(true)
     public void testDelete() {
-    	 Route route = LoadJson.readJson("createDeleteRoute.txt");
-    	 route = repo.save(route);
-    	 Response response = when().put(this.rootAPIIURL + "/route/" + route.getRouteId())
+    	 Route route = LoadJson.readJson("deleteRoute.txt");
+         given()
+                 .contentType(APPLICATION_JSON)
+                 .body(route)
+                 .when()
+                 .post(this.rootAPIIURL + "/route")
                  .then()
-                 .statusCode(200)
-                 .extract().response();
-          response.body().prettyPrint();
+                 .statusCode(201);
+         
           route = repo.findByRouteId(route.getRouteId());
+          Response responseDel = when().put(this.rootAPIIURL + "/route/" + route.getRouteId() + "," + route.getVersion() )
+                  .then()
+                  .statusCode(200)
+                  .extract().response();
           repo.delete(route);
     }
 

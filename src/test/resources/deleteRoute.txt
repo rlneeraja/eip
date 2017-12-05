@@ -1,0 +1,4 @@
+{
+  "condition": "114",
+  "destination": "junit-test-del"
+}
