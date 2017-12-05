@@ -1,7 +1,7 @@
 
 server:
   apiContext:
-  versionContext: v
+  versionContext: v1
   port: 10001
   context-path: /routing-services
 
@@ -21,6 +21,7 @@ spring:
     show-sql: true
     hibernate: 
       dialect: org.hibernate.dialect.SQKLServer2016Dialect
+      
 
 #  datasource:
 #      driverClassName: org.h2.Driver
@@ -37,8 +38,8 @@ spring:
   rabbitmq:
     host: localhost
     port: 5672
-    username: admin
-    password: admin
+    username: guest
+    password: guest
 
 
 ---

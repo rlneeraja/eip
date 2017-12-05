@@ -71,6 +71,10 @@ public class RoutingService  {
     public Iterable<Route> getRoutesByCondition(String condition){
     	return repo.findByCondition(condition);
     }
+
     
+    public Iterable<Route> findByConditionAndDestination(String condition, String destination){
+    	return repo.findByConditionAndDestination(condition, destination);
+    }
    
 }
