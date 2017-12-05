@@ -162,7 +162,7 @@ public class RoutingController {
     	long size = existingRoute.spliterator().getExactSizeIfKnown();
     	if(route.getRouteId() == null && size == 0 ){
     		Route r = routingService.save(route);
-	       	return ResponseEntity.status(HttpStatus.OK).body(r);
+	       	return ResponseEntity.status(HttpStatus.CREATED).body(r);
     	}
     	else{
     		ErrorResponse error = new ErrorResponse( ERROR_CODES.BAD_REQUEST, "Route already exist and can not be created", request.getRequestURL().toString() , 409, "");
