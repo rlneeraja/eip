@@ -68,6 +68,11 @@
 			<artifactId>jackson-mapper-lgpl</artifactId>
 			<version>1.9.13</version>
 		</dependency>
+		<dependency>
+		    <groupId>com.fasterxml.jackson.dataformat</groupId>
+		    <artifactId>jackson-dataformat-yaml</artifactId>
+		    <version>2.9.2</version>
+		</dependency>	
 		<!-- Testing and Dcoumentation Generation -->
 		<dependency>
 			<groupId>org.springframework.restdocs</groupId>
