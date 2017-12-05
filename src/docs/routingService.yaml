@@ -1,573 +1,493 @@
-swagger: '2.0'
+---
+swagger: "2.0"
 info:
-  title: Routing  services
-  description: This document describes Routing Services.
-  version: 1.0.0
-  termsOfService: 'http://swagger.io/terms/'
+  description: "Enables CRUD on Route object and Routes messages to approproate RabbitMQ\
+    \ queues"
+  version: "1.0.0"
+  title: "Routing Service"
   contact:
-    email: epiTeam@cdc.gov
+    name: "EIP Team"
+    email: "eipteam@cdc.gov"
   license:
-    name: Apache 2.0
-    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
-host: localhost
-basePath: /routing-services/v1
+    name: "eip"
+    url: "http://unlicense.org"
+host: "localhost:10001"
+basePath: "/routing-services"
 tags:
-  - name: Route CRUD
-    description: CRUD methods for a Routes
-schemes:
-  - http
+- name: "info-service-controller"
+  description: "Info Service Controller"
+- name: "routing-controller"
+  description: "Routing Controller"
 paths:
-  /routeMessage/{mguid}:
-    post:
-      tags:
-        - Route CRUD
-      summary:  Routes messages to program specific RabbitMQ queue.
-      parameters:
-        - name: mguid
-          in: path
-          description: message mguid that needs to be routed to queue
-          required: true
-          type: string
-      description: >
-       Retrieves desease condition for the message from incoming {mguid} from Message_Transaction and routes it to appropriate program specific RabittMQ queue
-      responses:
-        '200':
-          description: JSON representation of success of the message guid placed in program specific rabittmq.
-          schema:
-            $ref: '#/definitions/ApiResponse'
-          examples:
-            application/json:
-              queueName: "FDD"
-              message: "Success"
-        '400':
-          description: >-
-            Malformed request syntax, invalid request message framing, or deceptive request routing.
-          schema:
-            $ref: '#/definitions/error_message'
-          examples:
-            application/json:
-              timestamp": "2017-09-14T12:44:35.200"
-              code: "BAD_REQUEST"
-              description: "Count not find API end point"
-              status: 400
-              path: "/routeMessage"
-              exception: "RequestException"
-        '403':
-          description: Caller is not authorized to execute this method.
-          schema:
-            $ref: '#/definitions/error_message'
-          examples:
-            application/json:
-              timestamp": "2017-09-14T12:44:35.200"
-              code: "INTERNAL_ERROR"
-              description: "User not authorised to do this operation "
-              status: 403
-              path: "/routeMessage"
-              exception: "InternalServerException"
-        '404':
-          description: No Messages matches guid.
-          schema:
-            $ref: '#/definitions/error_message'
-          examples:
-            application/json:
-              timestamp": "2017-09-14T12:44:35.200"
-              code: "INVALID PARAMETER"
-              description: "Message with guid not found"
-              status: 404
-              path: "/routeMessage"
-              exception: "NullPointerException"
-        '500':
-          description: >-
-            Any Server side error Occurred.
-          schema:
-            $ref: '#/definitions/error_message'
-          examples:
-            application/json:
-              timestamp": "2017-09-14T12:44:35.200"
-              code: "INTERNAL_ERROR"
-              description: "We are unable to process your request at this moment. The message has not been accepted. Please try again later or contact EIP's system administrator."
-              status: 500
-              path: "/routeMessage"
-              exception: "InternalServerException"
-                
-  /routes:
+  /v1/info/about:
     get:
       tags:
-        - Route CRUD
-      summary: Retrieves a list of Route resources
-      description: >
-        Plural - 'resources' - endpoint to identify that we are retrieving a
-        list of routes.
-        
-        This method can use optional query parameters as filterning and paging
-        mechanism.
-
-        Paging defined below...
-      parameters:
-        - in: query
-          name: page_size
-          description: Number of records to be retrieved.
-          type: integer
-        - in: query
-          name: page_number
-          description: The Page number to be retrieved. Fist page should be 1.
-          type: integer
+      - "info-service-controller"
+      summary: "about"
+      operationId: "aboutUsingGET"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
       responses:
-        '200':
-          description: >-
-            Returns a List of routes. To be Defined if no hits should return
-            an empty list or a 404
+        200:
+          description: "OK"
           schema:
-           $ref: '#/definitions/error_message'
-        '400':
-          description: >-
-            Malformed request syntax, invalid request message framing, or deceptive request routing.
+            $ref: "#/definitions/About"
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+        404:
+          description: "Not Found"
+  /v1/info/ping:
+    get:
+      tags:
+      - "info-service-controller"
+      summary: "ping"
+      operationId: "pingUsingGET"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
+      responses:
+        200:
+          description: "OK"
           schema:
-            $ref: '#/definitions/error_message'
-          examples:
-            application/json:
-              timestamp": "2017-09-14T12:44:35.200"
-              code: "BAD_REQUEST"
-              description: "Count not find API end point"
-              status: 400
-              path: "/routeMessage"
-              exception: "RequestException"
-        '403':
-          description: Caller is not authorized to execute this method.
+            type: "string"
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+        404:
+          description: "Not Found"
+  /v1/info/version:
+    get:
+      tags:
+      - "info-service-controller"
+      summary: "getVersion"
+      operationId: "getVersionUsingGET"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
+      responses:
+        200:
+          description: "OK"
           schema:
-            $ref: '#/definitions/error_message'
-          examples:
-            application/json:
-              timestamp": "2017-09-14T12:44:35.200"
-              code: "INTERNAL_ERROR"
-              description: "User not authorised to do this operation "
-              status: 403
-              path: "/routeMessage"
-              exception: "InternalServerException"
-        '500':
-          description: >-
-            Any Server side error Occurred.
-          schema:
-            $ref: '#/definitions/error_message'
-          examples:
-            application/json:
-              timestamp": "2017-09-14T12:44:35.200"
-              code: "INTERNAL_ERROR"
-              description: "We are unable to process your request at this moment. The message has not been accepted. Please try again later or contact EIP's system administrator."
-              status: 500
-              path: "/routeMessage"
-              exception: "InternalServerException"
-  /route:
+            type: "string"
+        401:
+          description: "Unauthorized"
+        403:
+          description: "Forbidden"
+        404:
+          description: "Not Found"
+  /v1/route:
     post:
       tags:
-        - Route CRUD
-      summary: Creates a new Route resource in database
+      - "routing-controller"
+      summary: "Create a Route resources"
+      description: "Create a Route resources"
+      operationId: "createUsingPOST"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      - "*/*"
       parameters:
-        - in: body
-          name: body
-          description: JSON representation of route
-          schema:
-            $ref: '#/definitions/route'
-      description: >
-        Creates a new instance of the resource route .
-      responses:
-        '200':
-          description: JSON representation of the resource after being created.
-          schema:
-            $ref: '#/definitions/route'
-        '400':
-          description: >-
-            Malformed request syntax, invalid request message framing, or deceptive request routing.
-          schema:
-            $ref: '#/definitions/error_message'
-          examples:
-            application/json:
-              timestamp": "2017-09-14T12:44:35.200"
-              code: "BAD_REQUEST"
-              description: "Count not find API end point"
-              status: 400
-              path: "/routeMessage"
-              exception: "RequestException"
-        '403':
-          description: "Caller is not authorized to execute this method."
-          schema:
-            $ref: '#/definitions/error_message'
-          examples:
-            application/json:
-              timestamp": "2017-09-14T12:44:35.200"
-              code: "INTERNAL_ERROR"
-              description: "User not authorised to do this operation "
-              status: 403
-              path: "/routeMessage"
-              exception: "InternalServerException"
-        '422':
-          description: RabittMQ queue name used does not exist.
-          schema:
-            $ref: '#/definitions/error_message'
-          examples:
-            application/json:
-              timestamp": "2017-09-14T12:44:35.200"
-              code: "INVALID PARAMETER"
-              description: "INVALID Queue Name used when creating route"
-              status: 422
-              path: "/routeMessage"
-              exception: ""
-        '500':
-          description: >-
-            Any Server side error Occurred.
-          schema:
-            $ref: '#/definitions/error_message'
-          examples:
-            application/json:
-              timestamp": "2017-09-14T12:44:35.200"
-              code: "INTERNAL_ERROR"
-              description: "We are unable to process your request at this moment. The message has not been accepted. Please try again later or contact EIP's system administrator."
-              status: 500
-              path: "/routeMessage"
-              exception: "InternalServerException"
-  '/route/{rguid}':
-    parameters:
-      - in: path
-        name: rguid
-        description: >
-          A unique identifier of route  - usually the internal
-          persistence primary key or a unique key that is compatible with URL
-          formatting.
-        type: string
+      - in: "body"
+        name: "route"
+        description: "route"
         required: true
-    get:
-      tags:
-        - Route CRUD
-      summary: 'Retrieves a single Route object based on route id  {rguid}'
-      description: 
-        Retrieves a single Route object identified by {rguid}. 
+        schema:
+          $ref: "#/definitions/Route"
       responses:
-        '200':
-          description: 'JSON representation of the resource mapped to {rguid}. '
+        200:
+          description: "Route successfully created"
           schema:
-            $ref: '#/definitions/route'
-        '400':
-          description: >-
-            Malformed request syntax, invalid request message framing, or deceptive request routing.
-          schema:
-            $ref: '#/definitions/error_message'
-          examples:
-            application/json:
-              timestamp": "2017-09-14T12:44:35.200"
-              code: "BAD_REQUEST"
-              description: "Count not find API end point"
-              status: 400
-              path: "/routeMessage"
-              exception: "RequestException"
-        '403':
-          description: Caller is not authorized to execute this method.
-          schema:
-            $ref: '#/definitions/error_message'
-          examples:
-            application/json:
-              timestamp": "2017-09-14T12:44:35.200"
-              code: "INTERNAL_ERROR"
-              description: "User not authorised to do this operation "
-              status: 403
-              path: "/routeMessage"
-              exception: "InternalServerException"
-        '404':
-          description: No Messages matches guid.
-          schema:
-            $ref: '#/definitions/error_message'
-          examples:
-            application/json:
-              timestamp": "2017-09-14T12:44:35.200"
-              code: "INVALID PARAMETER"
-              description: "Message with guid not found"
-              status: 404
-              path: "/routeMessage"
-              exception: "NullPointerException"
-        '500':
-          description: >-
-            Any Server side error Occurred.
-          schema:
-            $ref: '#/definitions/error_message'
-          examples:
-            application/json:
-              timestamp": "2017-09-14T12:44:35.200"
-              code: "INTERNAL_ERROR"
-              description: "We are unable to process your request at this moment. The message has not been accepted. Please try again later or contact EIP's system administrator."
-              status: 500
-              path: "/routeMessage"
-              exception: "InternalServerException"
+            $ref: "#/definitions/_SWRoute"
+        201:
+          description: "Created"
+        400:
+          description: "Any error that is caused by the user - bad data sent, business\
+            \ rules violated, etc"
+        401:
+          description: "Unauthorized"
+        500:
+          description: "Any Server side error can be reported via a 500. those errors\
+            \ are not recoverable by they user - something is wrong with the system"
+        403:
+          description: "Caller is not authorized to execute this method"
+        404:
+          description: "Not Found"
+        409:
+          description: "Conflict"
     put:
       tags:
-        - Route CRUD
-      summary: Updates resource
+      - "routing-controller"
+      summary: "Update a Route resources"
+      description: "Update a Route resources"
+      operationId: "updateUsingPUT"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      - "*/*"
       parameters:
-        - in: body
-          name: body
-          description: JSON representation of ResourceA
-          schema:
-            $ref: '#/definitions/route'
-      description: >
-        Updates the given Route resource in database which has primary key of route_id.
+      - in: "body"
+        name: "route"
+        description: "route"
+        required: true
+        schema:
+          $ref: "#/definitions/Route"
       responses:
-        '200':
-          description: 'JSON representation of the route mapped to {route_id}'
+        200:
+          description: "Route successfully updated"
           schema:
-            $ref: '#/definitions/route'
-        '400':
-          description: >-
-            Malformed request syntax, invalid request message framing, or deceptive request routing.
-          schema:
-            $ref: '#/definitions/error_message'
-          examples:
-            application/json:
-              timestamp": "2017-09-14T12:44:35.200"
-              code: "BAD_REQUEST"
-              description: "Count not find API end point"
-              status: 400
-              path: "/routeMessage"
-              exception: "RequestException"
-        '403':
-          description: Caller is not authorized to execute this method.
-          schema:
-            $ref: '#/definitions/error_message'
-          examples:
-            application/json:
-              timestamp": "2017-09-14T12:44:35.200"
-              code: "INTERNAL_ERROR"
-              description: "User not authorised to do this operation "
-              status: 403
-              path: "/routeMessage"
-              exception: "InternalServerException"
-        '404':
-          description: No Messages matches guid.
-          schema:
-            $ref: '#/definitions/error_message'
-          examples:
-            application/json:
-              timestamp": "2017-09-14T12:44:35.200"
-              code: "INVALID PARAMETER"
-              description: "Message with guid not found"
-              status: 404
-              path: "/routeMessage"
-              exception: "NullPointerException"
-        '409':
-          description: >
-            Conflict. The route_id in the parameter has to match the ID on
-            the object representation. Otherwise a 409 will be sent. If using
-            some kind of versioning to avoid overwriting changes, and there's a
-            version mismatch, a 409 can also be used.
-          schema:
-            $ref: '#/definitions/error_message'
-          examples:
-            application/json:
-              timestamp": "2017-09-14T12:44:35.200"
-              code: "VERSIONING_ERROR"
-              description: "Version of the resource updated is not latest, Please get the latest before updat."
-              status: 500
-              path: "/routeMessage"
-              exception: ""
-        '500':
-          description: >-
-            Any Server side error Occurred.
-          schema:
-            $ref: '#/definitions/error_message'
-          examples:
-            application/json:
-              timestamp": "2017-09-14T12:44:35.200"
-              code: "INTERNAL_ERROR"
-              description: "We are unable to process your request at this moment. The message has not been accepted. Please try again later or contact EIP's system administrator."
-              status: 500
-              path: "/routeMessage"
-              exception: "InternalServerException"
-
-    delete:
+            $ref: "#/definitions/_SWRoute"
+        201:
+          description: "Created"
+        400:
+          description: "Any error that is caused by the user - bad data sent, business\
+            \ rules violated, etc"
+        401:
+          description: "Unauthorized"
+        500:
+          description: "Any Server side error can be reported via a 500. those errors\
+            \ are not recoverable by they user - something is wrong with the system"
+        403:
+          description: "Caller is not authorized to execute this method"
+        404:
+          description: "Not Found"
+        409:
+          description: "Conflict"
+  /v1/route/{routeId}:
+    get:
       tags:
-        - Route CRUD
-      summary: Removes route.
+      - "routing-controller"
+      summary: "Get Route resource for a soecific routeId"
+      description: "Get Route resource for a soecific routeId"
+      operationId: "getRouteUsingGET"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      - "*/*"
       parameters:
-        - in: query
-          name: version
-          type: string
-          required: true
-          description: >-
-            For versioning for concurrency, send the current version the
-            user loaded as a query parameters.
+      - name: "routeId"
+        in: "path"
+        description: "routeId"
+        required: true
+        type: "string"
       responses:
-        '200':
-          description: 'Removes the given Route resource. '
+        200:
+          description: "Registration successfully created"
           schema:
-            $ref: '#/definitions/DeleteResponse'
-          examples:
-            application/json:
-              rguid: "2xjhhdsadsd1234434"
-              message: "Delete Success"
-        '400':
-          description: >-
-            Malformed request syntax, invalid request message framing, or deceptive request routing.
+            $ref: "#/definitions/_SWRoute"
+        400:
+          description: "Any error that is caused by the user - bad data sent, business\
+            \ rules violated, etc"
+        401:
+          description: "Unauthorized"
+        500:
+          description: "Any Server side error can be reported via a 500. those errors\
+            \ are not recoverable by they user - something is wrong with the system"
+        403:
+          description: "Caller is not authorized to execute this method"
+        404:
+          description: "Not Found"
+        409:
+          description: "Conflict"
+  /v1/route/{routeId},{userSuppliedVersion}:
+    put:
+      tags:
+      - "routing-controller"
+      summary: "Delete a Route resource"
+      description: "Delete a Route resource"
+      operationId: "deleteUsingPUT"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      - "*/*"
+      parameters:
+      - name: "routeId"
+        in: "path"
+        description: "routeId"
+        required: true
+        type: "string"
+      - name: "userSuppliedVersion"
+        in: "path"
+        description: "userSuppliedVersion"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Route successfully deleted"
           schema:
-            $ref: '#/definitions/error_message'
-          examples:
-            application/json:
-              timestamp": "2017-09-14T12:44:35.200"
-              code: "BAD_REQUEST"
-              description: "Count not find API end point"
-              status: 400
-              path: "/routeMessage"
-              exception: "RequestException"
-        '403':
-          description: Caller is not authorized to execute this method.
+            $ref: "#/definitions/_SWRoute"
+        201:
+          description: "Created"
+        400:
+          description: "Any error that is caused by the user - bad data sent, business\
+            \ rules violated, etc"
+        401:
+          description: "Unauthorized"
+        500:
+          description: "Any Server side error can be reported via a 500. those errors\
+            \ are not recoverable by they user - something is wrong with the system"
+        403:
+          description: "Caller is not authorized to execute this method"
+        404:
+          description: "Not Found"
+        409:
+          description: "Conflict"
+  /v1/routeMessage:
+    post:
+      tags:
+      - "routing-controller"
+      summary: "Routes Message with guid to for a specific rabitmq queue for condition\
+        \ code"
+      description: "Routes Message with guid to for a specific rabitmq queue for condition\
+        \ code"
+      operationId: "routeMessageUsingPOST"
+      consumes:
+      - "application/json"
+      produces:
+      - "*/*"
+      parameters:
+      - name: "condition"
+        in: "query"
+        description: "condition"
+        required: true
+        type: "string"
+      - name: "mguid"
+        in: "query"
+        description: "mguid"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Routing successfully done"
           schema:
-            $ref: '#/definitions/error_message'
-          examples:
-            application/json:
-              timestamp": "2017-09-14T12:44:35.200"
-              code: "INTERNAL_ERROR"
-              description: "User not authorised to do this operation "
-              status: 403
-              path: "/routeMessage"
-              exception: "InternalServerException"
-        '404':
-          description: No Messages matches guid.
+            type: "string"
+        201:
+          description: "Created"
+        400:
+          description: "Any error that is caused by the user - bad data sent, business\
+            \ rules violated, etc"
+        401:
+          description: "Unauthorized"
+        500:
+          description: "Any Server side error can be reported via a 500. those errors\
+            \ are not recoverable by they user - something is wrong with the system"
+        403:
+          description: "Caller is not authorized to execute this method"
+        404:
+          description: "Not Found"
+        207:
+          description: "Routing partially done with multi status"
           schema:
-            $ref: '#/definitions/error_message'
-          examples:
-            application/json:
-              timestamp": "2017-09-14T12:44:35.200"
-              code: "INVALID PARAMETER"
-              description: "Message with guid not found"
-              status: 404
-              path: "/routeMessage"
-              exception: "NullPointerException"
-        '409':
-          description: >
-            Conflict. The route_id in the parameter has to match the ID on
-            the object representation. Otherwise a 409 will be sent. If using
-            some kind of versioning to avoid overwriting changes, and there's a
-            version mismatch, a 409 can also be used.
+            type: "string"
+  /v1/routes:
+    get:
+      tags:
+      - "routing-controller"
+      summary: "Get all Route resources"
+      description: "Get all Route resources"
+      operationId: "getRoutesUsingGET"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      - "*/*"
+      responses:
+        200:
+          description: "Registration successfully created"
           schema:
-            $ref: '#/definitions/error_message'
-          examples:
-            application/json:
-              timestamp": "2017-09-14T12:44:35.200"
-              code: "VERSIONING_ERROR"
-              description: "Version of the resource updated is not latest, Please get the latest before updat."
-              status: 500
-              path: "/routeMessage"
-              exception: ""
-        '500':
-          description: >-
-            Any Server side error Occurred.
-          schema:
-            $ref: '#/definitions/error_message'
-          examples:
-            application/json:
-              timestamp": "2017-09-14T12:44:35.200"
-              code: "INTERNAL_ERROR"
-              description: "We are unable to process your request at this moment. The message has not been accepted. Please try again later or contact EIP's system administrator."
-              status: 500
-              path: "/routeMessage"
-              exception: "InternalServerException"
+            $ref: "#/definitions/_SWRoute"
+        400:
+          description: "Any error that is caused by the user - bad data sent, business\
+            \ rules violated, etc"
+        401:
+          description: "Unauthorized"
+        500:
+          description: "Any Server side error can be reported via a 500. those errors\
+            \ are not recoverable by they user - something is wrong with the system"
+        403:
+          description: "Caller is not authorized to execute this method"
+        404:
+          description: "Not Found"
+        409:
+          description: "Conflict"
 definitions:
-  route:
-    type: object
-    properties:
-      rguid:
-        type: string
-        description: unique guid for route
-      createdDate:
-        type: string
-        format: ISO-8601 UTC based
-        example: '2017-09-14T12:44:35.200Z'
-      createdBy:
-        type: string
-        example: 'nLakshmipathy.aws.aims'
-      version:
-        type: integer
-        description: version of the record.
-      condition:
-        type: string
-        description: desease condition per MMG
-      destination:
-        type: string
-        description: which Queue the Message should be posted to
-        enum:
-            - FDD
-            - ABC
-            - XYZ
-  CollectionResults:
-    type: object
-    properties:
-      metadata:
-        type: object
-        properties:
-          page_info:
-            type: object
-            properties:
-              page_number:
-                type: integer
-              page_size:
-                type: integer
-              total_number_of_pages:
-                type: integer
-              max_page_size:
-                type: integer
-      entries:
-        type: array
-        items:
-          $ref: '#/definitions/route'
-  ApiResponse:
+  ResponseEntity:
     type: "object"
     properties:
-      queueName:
+      body:
+        type: "object"
+      statusCode:
         type: "string"
-      message:
-        type: "string"
-  DeleteResponse:
+        enum:
+        - "100"
+        - "101"
+        - "102"
+        - "103"
+        - "200"
+        - "201"
+        - "202"
+        - "203"
+        - "204"
+        - "205"
+        - "206"
+        - "207"
+        - "208"
+        - "226"
+        - "300"
+        - "301"
+        - "302"
+        - "303"
+        - "304"
+        - "305"
+        - "307"
+        - "308"
+        - "400"
+        - "401"
+        - "402"
+        - "403"
+        - "404"
+        - "405"
+        - "406"
+        - "407"
+        - "408"
+        - "409"
+        - "410"
+        - "411"
+        - "412"
+        - "413"
+        - "414"
+        - "415"
+        - "416"
+        - "417"
+        - "418"
+        - "419"
+        - "420"
+        - "421"
+        - "422"
+        - "423"
+        - "424"
+        - "426"
+        - "428"
+        - "429"
+        - "431"
+        - "451"
+        - "500"
+        - "501"
+        - "502"
+        - "503"
+        - "504"
+        - "505"
+        - "506"
+        - "507"
+        - "508"
+        - "509"
+        - "510"
+        - "511"
+      statusCodeValue:
+        type: "integer"
+        format: "int32"
+  _SWRoute:
     type: "object"
-    properties:
-      rguid:
-        type: "string"
-      message:
-        type: "string"
-  error_message:
-    type: object
-    properties:
-      timestamp:
-        type: string
-        format: ISO-8601 UTC based
-        example: '2017-09-14T12:44:35.200Z'
-      code:
-        type: string
-        description: Service specific categorization of errors.
-        enum:
-          - MISSING PARAMETER
-          - UNAUTHORISED USER
-          - INVALID CONDITION
-          - SERVER ERROR
-          - DATABASE SERVER DOWN
-      description:
-        type: string
-        description: User friendly message about the error.
-      status:
-        type: integer
-        description: HTTP status code returned to user. Must match HTTP Status on header.
-        enum:
-          - 200
-          - 400
-          - 403
-          - 404
-          - 409
-          - 500
-      path:
-        type: string
-        description: The URL that was called that generated this error.
-        format: URL
-      exception:
-        type: string
-        description: 'The exception, if any, associated with this error.'
     required:
-      - timestamp
-      - code
-      - description
-      - status
-      - path
+    - "condition"
+    - "destination"
+    properties:
+      createdBy:
+        type: "string"
+      createdDateTime:
+        type: "string"
+        format: "date-time"
+      routeId:
+        type: "string"
+      updateDateTime:
+        type: "string"
+        format: "date-time"
+      updatedBy:
+        type: "string"
+      version:
+        type: "integer"
+        format: "int64"
+      condition:
+        type: "string"
+        example: "10001"
+        description: "Condition Code"
+      destination:
+        type: "string"
+        example: "FDD"
+        description: "Destination Route Name"
+  ContactInfo:
+    type: "object"
+    properties:
+      email:
+        type: "string"
+      name:
+        type: "string"
+      role:
+        type: "string"
+  Route:
+    type: "object"
+    required:
+    - "condition"
+    - "destination"
+    properties:
+      condition:
+        type: "string"
+        example: "10001"
+        description: "Condition Code"
+      destination:
+        type: "string"
+        example: "FDD"
+        description: "Destination Route Name"
+  About:
+    type: "object"
+    properties:
+      contacts:
+        type: "array"
+        items:
+          $ref: "#/definitions/ContactInfo"
+      docs:
+        type: "string"
+      summary:
+        type: "string"
+      versions:
+        type: "array"
+        items:
+          type: "string"
+  ErrorResponse:
+    type: "object"
+    properties:
+      description:
+        type: "string"
+      details:
+        type: "array"
+        items:
+          type: "object"
+      errorCode:
+        type: "string"
+        enum:
+        - "BAD_REQUEST"
+        - "UNPROCESSABLE_ENTITY"
+        - "INTERNAL_SERVER_ERROR"
+        - "NOT_ACCEPTABLE"
+        - "NOT_FOUND"
+        - "CONFLICT"
+      exception:
+        type: "string"
+      path:
+        type: "string"
+      status:
+        type: "integer"
+        format: "int32"
+      timestamp:
+        type: "string"
