@@ -8,9 +8,6 @@ info:
   contact:
     name: "EIP Team"
     email: "eipteam@cdc.gov"
-  license:
-    name: "eip"
-    url: "http://unlicense.org"
 host: "localhost:10001"
 basePath: "/routing-services"
 tags:
@@ -255,7 +252,7 @@ paths:
       consumes:
       - "application/json"
       produces:
-      - "*/*"
+      - "application/json"
       parameters:
       - name: "condition"
         in: "query"
@@ -271,7 +268,7 @@ paths:
         200:
           description: "Routing successfully done"
           schema:
-            type: "string"
+            $ref: "#/definitions/RouteApiResponse"
         201:
           description: "Created"
         400:
@@ -289,7 +286,7 @@ paths:
         207:
           description: "Routing partially done with multi status"
           schema:
-            type: "string"
+            $ref: "#/definitions/RouteApiResponse"
   /v1/routes:
     get:
       tags:
@@ -426,6 +423,17 @@ definitions:
         type: "string"
         example: "FDD"
         description: "Destination Route Name"
+  RouteApiResponse:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+      mguid:
+        type: "string"
+      queName:
+        type: "array"
+        items:
+          type: "object"
   ContactInfo:
     type: "object"
     properties:

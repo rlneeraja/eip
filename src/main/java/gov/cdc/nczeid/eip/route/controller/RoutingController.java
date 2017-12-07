@@ -4,6 +4,7 @@ import gov.cdc.nczeid.eip.rest.ApiVersion;
 import gov.cdc.nczeid.eip.route.model.ERROR_CODES;
 import gov.cdc.nczeid.eip.route.model.ErrorResponse;
 import gov.cdc.nczeid.eip.route.model.Route;
+import gov.cdc.nczeid.eip.route.model.RouteApiResponse;
 import gov.cdc.nczeid.eip.route.model._SWRoute;
 import gov.cdc.nczeid.eip.route.services.EventSender;
 import gov.cdc.nczeid.eip.route.services.RouteNotFoundException;
@@ -57,7 +58,7 @@ public class RoutingController {
     
     @ApiOperation(value = "Routes Message with guid to for a specific rabitmq queue for condition code", 
     		notes = "Routes Message with guid to for a specific rabitmq queue for condition code", 
-    		response = String.class)
+    		response = RouteApiResponse.class,  produces="application/json")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Routing successfully done"),
             @ApiResponse(code = 207, message = "Routing partially done with multi status"),
@@ -69,31 +70,24 @@ public class RoutingController {
     @RequestMapping(value = "/routeMessage", method = POST)
 	public ResponseEntity routeMessage(@Valid @RequestParam String condition, @RequestParam String mguid,
 			HttpServletRequest request) throws Exception {
-		String routedTo = "";
 		// get the condition and queue map
 		Iterable<Route> routes = routingService.getRoutesByCondition(condition);
 		long size = routes.spliterator().getExactSizeIfKnown();
-		String respMessage = "";
-		boolean atLeastOneSuccess = false;
 		
+		RouteApiResponse apiresponse = new RouteApiResponse();
+		apiresponse.setMguid(mguid);
+		
+		List destinations = new ArrayList<String> ();
 		if (size > 0 ) {
 			Iterator<Route> itRoutes = routes.iterator();
 			while (itRoutes.hasNext()) {
 				Route r = itRoutes.next();
 				if (r.getDestination() != null && !r.getDestination().isEmpty()){
-				//	try{
 						eventSender.send(r.getDestination(), mguid);
-				//		atLeastOneSuccess = true;
-						respMessage += "Message with guid " + mguid + " is sucessfully routed to queue " + r.getDestination() + "\n";
-				//	}
-//					catch(Exception e)
-//					{
-//						respMessage += "Message with guid " + mguid + " failed to route to " + r.getDestination() + "\n";
-//					}
+						destinations.add(r.getDestination());
 				}
 			}
-//			if(!atLeastOneSuccess)
-//				throw new Exception();
+			apiresponse.setQueName(destinations);
 		} else {
 			ErrorResponse error = new ErrorResponse( ERROR_CODES.UNPROCESSABLE_ENTITY,
 					"No Routes defined for condition. Please try again later or contact EIP's system administrator to get the route created for condition code",
@@ -101,14 +95,7 @@ public class RoutingController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
 		}
 		
-//		if(size >0)
-//			return ResponseEntity.status(HttpStatus.MULTI_STATUS)
-//				.body(respMessage);
-//		else
-//			return ResponseEntity.status(HttpStatus.OK)
-//					.body(respMessage);
-		
-		return ResponseEntity.status(HttpStatus.OK).body(respMessage);
+		return ResponseEntity.status(HttpStatus.OK).body(apiresponse);
 	}
 
     @ApiOperation(value = "Get Route resource for a soecific routeId", 
