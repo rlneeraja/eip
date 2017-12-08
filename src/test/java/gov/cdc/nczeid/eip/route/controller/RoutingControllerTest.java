@@ -18,6 +18,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 
+import java.sql.DriverManager;
+
 @RunWith(SpringRunner.class)
 @TestPropertySource(locations="classpath:application-test.yml")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT) 
@@ -49,15 +51,14 @@ public class RoutingControllerTest {
         this.rootAPIIURL = "http://localhost:10001"+
         		contextPath + apiContext+ "/"+  versionContext+ "1";
     }
-    
+  
    
 
     @After
     public void teardown() throws Exception {
-        //super.tearDown();
-
 
     }
+    
  // save good messsage
   @Test
   public void testCreateRoute() {
@@ -69,6 +70,8 @@ public class RoutingControllerTest {
                 .post(this.rootAPIIURL + "/route")
                 .then()
                 .statusCode(201);
+        route = repo.findByConditionAndDestination(route.getCondition(), route.getDestination()).iterator().next();
+        repo.delete(route);
     }
 
   // save duplicate messsage
@@ -81,21 +84,35 @@ public class RoutingControllerTest {
                  .when()
                  .post(this.rootAPIIURL + "/route")
                  .then()
+                 .statusCode(201);
+    	 route = LoadJson.readJson("createRoute.txt");
+         given()
+                 .contentType(APPLICATION_JSON)
+                 .body(route)
+                 .when()
+                 .post(this.rootAPIIURL + "/route")
+                 .then()
                 // .statusCode(409);
                  .statusCode(400);
-        
+         route = repo.findByConditionAndDestination(route.getCondition(), route.getDestination()).iterator().next();
+         repo.delete(route);
     }
     
-    //   @Test
+    @Test
     public void testUpdateRoute() {
-          Route route = LoadJson.readJson("updateRoute.txt");
-          given()
+    	 Route route = LoadJson.readJson("deleteRoute.txt");
+         route = repo.save(route);
+         route = repo.findByRouteId(route.getRouteId());
+         route.setCondition("222");
+         given()
                   .contentType(APPLICATION_JSON)
                   .body(route)
                   .when()
                   .put(this.rootAPIIURL + "/route")
                   .then()
-                  .statusCode(201);
+                  .statusCode(200);
+         route = repo.findByRouteId(route.getRouteId());
+         repo.delete(route);
       }
     
     // Tests for findAll
@@ -133,20 +150,24 @@ public class RoutingControllerTest {
     @Rollback(true)
     public void testDelete() {
     	 Route route = LoadJson.readJson("deleteRoute.txt");
-         given()
-                 .contentType(APPLICATION_JSON)
-                 .body(route)
-                 .when()
-                 .post(this.rootAPIIURL + "/route")
-                 .then()
-                 .statusCode(201);
-         
-          route = repo.findByRouteId(route.getRouteId());
+         route = repo.save(route);
+         route = repo.findByRouteId(route.getRouteId());
           Response responseDel = when().put(this.rootAPIIURL + "/route/" + route.getRouteId() + "," + route.getVersion() )
                   .then()
                   .statusCode(200)
                   .extract().response();
+          route = repo.findByRouteId(route.getRouteId());
           repo.delete(route);
+    }
+    
+    // Tests routing
+    @Test
+    public void testRouteMessage() {
+        Response response = when().post(this.rootAPIIURL + "/routeMessage?condition=11545&mguid=bde3140d-8fdf-4034-b683-00c782648ded")
+                .then()
+                .statusCode(200)
+                .extract().response();
+         response.body().prettyPrint();
     }
 
 }
