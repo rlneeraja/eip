@@ -1,13 +1,13 @@
 package gov.cdc.nczeid.eip.route.controller;
 
 import gov.cdc.nczeid.eip.rest.ApiVersion;
+import gov.cdc.nczeid.eip.route.exception.RouteNotFoundException;
 import gov.cdc.nczeid.eip.route.model.ERROR_CODES;
 import gov.cdc.nczeid.eip.route.model.ErrorResponse;
 import gov.cdc.nczeid.eip.route.model.Route;
 import gov.cdc.nczeid.eip.route.model.RouteApiResponse;
 import gov.cdc.nczeid.eip.route.model._SWRoute;
 import gov.cdc.nczeid.eip.route.services.EventSender;
-import gov.cdc.nczeid.eip.route.services.RouteNotFoundException;
 import gov.cdc.nczeid.eip.route.services.RoutingService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -110,8 +110,10 @@ public class RoutingController {
     	}
     )
     @RequestMapping(value="/route/{routeId}", method = GET)
-    public ResponseEntity getRoute(@PathVariable UUID routeId,HttpServletRequest request) throws RouteNotFoundException, Exception{
+    public ResponseEntity getRoute(@PathVariable UUID routeId,HttpServletRequest request) throws MethodArgumentNotValidException, Exception, RouteNotFoundException{
         Route route = routingService.findByRouteId(routeId);
+        if(route == null) 
+			throw new RouteNotFoundException("Route Not Found") ;
             return ResponseEntity.ok(route);
     }
     
@@ -170,8 +172,10 @@ public class RoutingController {
     	}
     )
     @RequestMapping(value = "/route", method = PUT)
-    public ResponseEntity update(@Valid @RequestBody Route route, HttpServletRequest request)  throws  Exception{
+    public ResponseEntity update(@Valid @RequestBody Route route, HttpServletRequest request)  throws RouteNotFoundException, Exception{
 	       	 	Route r = routingService.save(route);
+	       	 	if(route == null) 
+	       	 		throw new RouteNotFoundException("Route Not Found") ;
 		        return ResponseEntity.status(HttpStatus.OK).body(r);
     		
     }
@@ -188,8 +192,10 @@ public class RoutingController {
     	}
     )
     @RequestMapping(value = "/route/{routeId},{userSuppliedVersion}", method = PUT)
-    public ResponseEntity delete(@PathVariable UUID routeId, @PathVariable Long userSuppliedVersion,HttpServletRequest request) throws RouteNotFoundException, Exception {
+    public ResponseEntity delete(@PathVariable UUID routeId, @PathVariable Long userSuppliedVersion,HttpServletRequest request) throws MethodArgumentNotValidException, Exception, RouteNotFoundException {
     		Route route = routingService.findByRouteId(routeId);
+    		if(route == null) 
+    				throw new RouteNotFoundException("Route Not Found") ;
     		if(route.getVersion() == userSuppliedVersion){
 	    		if(route.getActive() == 1){
 	    			route.setActive(0);
@@ -220,12 +226,21 @@ public class RoutingController {
     }
 
     @ApiOperation(hidden=true, value = "Exception Handling")
-    @ExceptionHandler({MethodArgumentTypeMismatchException.class, RouteNotFoundException.class})
+    @ExceptionHandler({MethodArgumentTypeMismatchException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @RequestMapping("/notfound")
     private ResponseEntity<ErrorResponse> handleNotFoundError(HttpServletRequest request, Exception e) {
-    	ErrorResponse error = new ErrorResponse( ERROR_CODES.BAD_REQUEST, "Invalid Rguid Passed", request.getRequestURL().toString() , 400, e.getMessage());
+    	ErrorResponse error = new ErrorResponse( ERROR_CODES.BAD_REQUEST, "Invalid route id Passed", request.getRequestURL().toString() , 400, e.getMessage());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+    
+    @ApiOperation(hidden=true, value = "Exception Handling")
+    @ExceptionHandler({RouteNotFoundException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @RequestMapping("/routenotfound")
+    private ResponseEntity<ErrorResponse> handleRouteNotFoundError(HttpServletRequest request, Exception e) {
+    	ErrorResponse error = new ErrorResponse( ERROR_CODES.NOT_FOUND, "Route not found for the route id passed", request.getRequestURL().toString() , 404, e.getMessage());
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
     
     @ApiOperation(hidden=true, value = "Exception Handling")

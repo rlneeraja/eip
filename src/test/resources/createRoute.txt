@@ -1,4 +1,10 @@
-{
-  "condition": "113",
-  "destination": "junit"
-}
+ {
+    "condition": "236",
+    "destination": "test junit",
+    "active": "1",
+    "createdDateTime": "2012-04-23T18:25:43.511Z",
+    "updateDateTime": "2012-04-23T18:25:43.511Z",
+    "createdBy": "EIP_ROUTING_SERVICE",
+    "updatedBy": "EIP_ROUTING_SERVICE",
+    "version": "0"
+  }
