@@ -105,7 +105,7 @@ public class RoutingControllerTest {
     
     @Test
     public void testUpdateRoute() {
-    	 Route route = LoadJson.readJson("deleteRoute.txt");
+    	 Route route = LoadJson.readJson("updateRoute.txt");
          route = repo.save(route);
          route = repo.findByRouteId(route.getRouteId());
          route.setCondition("222");
@@ -157,7 +157,7 @@ public class RoutingControllerTest {
     	 Route route = LoadJson.readJson("deleteRoute.txt");
          route = repo.save(route);
          route = repo.findByRouteId(route.getRouteId());
-          Response responseDel = when().put(this.rootAPIIURL + "/route/" + route.getRouteId() + "," + route.getVersion() )
+          Response responseDel = when().put(this.rootAPIIURL + "/route/" + route.getRouteId() + "?userSuppliedVersion=" + route.getVersion() )
                   .then()
                   .statusCode(200)
                   .extract().response();

@@ -34,6 +34,7 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.ws.rs.QueryParam;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
@@ -191,8 +192,8 @@ public class RoutingController {
             @ApiResponse(code = 500, message = "Any Server side error can be reported via a 500. those errors are not recoverable by they user - something is wrong with the system")
     	}
     )
-    @RequestMapping(value = "/route/{routeId},{userSuppliedVersion}", method = PUT)
-    public ResponseEntity delete(@PathVariable UUID routeId, @PathVariable Long userSuppliedVersion,HttpServletRequest request) throws MethodArgumentNotValidException, Exception, RouteNotFoundException {
+    @RequestMapping(value = "/route/{routeId}", method = PUT)
+    public ResponseEntity delete(@PathVariable UUID routeId, @QueryParam(value = "userSuppliedVersion") Long userSuppliedVersion,HttpServletRequest request) throws MethodArgumentNotValidException, Exception, RouteNotFoundException {
     		Route route = routingService.findByRouteId(routeId);
     		if(route == null) 
     				throw new RouteNotFoundException("Route Not Found") ;

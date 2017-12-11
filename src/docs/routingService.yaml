@@ -195,7 +195,6 @@ paths:
           description: "Not Found"
         409:
           description: "Conflict"
-  /v1/route/{routeId},{userSuppliedVersion}:
     put:
       tags:
       - "routing-controller"
@@ -213,12 +212,13 @@ paths:
         description: "routeId"
         required: true
         type: "string"
-      - name: "userSuppliedVersion"
-        in: "path"
+      - in: "body"
+        name: "userSuppliedVersion"
         description: "userSuppliedVersion"
-        required: true
-        type: "integer"
-        format: "int64"
+        required: false
+        schema:
+          type: "integer"
+          format: "int64"
       responses:
         200:
           description: "Route successfully deleted"
