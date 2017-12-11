@@ -1,27 +1,21 @@
 package gov.cdc.nczeid.eip.route;
 
-import javax.sql.DataSource;
 
 import org.h2.server.web.WebServlet;
-import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @SpringBootApplication
+@EnableEurekaClient
 public class RoutingSpringBootService extends SpringBootServletInitializer implements CommandLineRunner {
 
 	@Override
@@ -53,6 +47,13 @@ public class RoutingSpringBootService extends SpringBootServletInitializer imple
 				registry.addMapping("/**");
 			}
 		};
+	}
+	
+	@Bean
+	public ServletRegistrationBean h2servletRegistration() {
+	    ServletRegistrationBean registration = new ServletRegistrationBean(new WebServlet());
+	    registration.addUrlMappings("/console/*");
+	    return registration;
 	}
 	
 	
