@@ -1,4 +1,4 @@
-{
-  "condition": "113",
-  "destination": "junit"
-}
+ {
+    "condition": "236",
+    "destination": "test junit"
+  }

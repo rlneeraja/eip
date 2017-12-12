@@ -57,7 +57,7 @@ public class GenerateSwaggerYamlTest {
 	    JsonNode jsonTree = new ObjectMapper().readTree(jsonString);
 	    String yaml = new YAMLMapper().writeValueAsString(jsonTree);
 	    
-	    FileWriter writer = new FileWriter("./src/docs/swaggerTest.yaml");
+	    FileWriter writer = new FileWriter("./src/docs/swaggerTest1.yaml");
 	    writer.write(yaml);
 	    writer.close();
 	}

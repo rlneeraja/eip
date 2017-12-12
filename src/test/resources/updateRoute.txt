@@ -1,6 +1,10 @@
  {
-    "routeId": "bde3140d-8fdf-4034-b683-00c782648ded",
-    "condition": "112",
-    "destination": "DIP@#",
-    "version": 6
+    "condition": "342",
+    "destination": "test junit",
+    "active": "1",
+    "createdDateTime": "2012-04-23T18:25:43.511Z",
+    "updateDateTime": "2012-04-23T18:25:43.511Z",
+    "createdBy": "EIP_ROUTING_SERVICE",
+    "updatedBy": "EIP_ROUTING_SERVICE",
+    "version": "0"
   }

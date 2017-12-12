@@ -1,5 +1,6 @@
 package gov.cdc.nczeid.eip.route;
 
+
 import org.h2.server.web.WebServlet;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.ExitCodeGenerator;
@@ -54,5 +55,6 @@ public class RoutingSpringBootService extends SpringBootServletInitializer imple
 	    registration.addUrlMappings("/console/*");
 	    return registration;
 	}
-
+	
+	
 }
