@@ -34,7 +34,6 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import javax.ws.rs.QueryParam;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
@@ -193,7 +192,7 @@ public class RoutingController {
     	}
     )
     @RequestMapping(value = "/route/{routeId}", method = PUT)
-    public ResponseEntity delete(@PathVariable UUID routeId, @QueryParam(value = "userSuppliedVersion") Long userSuppliedVersion,HttpServletRequest request) throws MethodArgumentNotValidException, Exception, RouteNotFoundException {
+    public ResponseEntity delete(@PathVariable UUID routeId, @RequestParam(value = "userSuppliedVersion") Long userSuppliedVersion,HttpServletRequest request) throws MethodArgumentNotValidException, Exception, RouteNotFoundException {
     		Route route = routingService.findByRouteId(routeId);
     		if(route == null) 
     				throw new RouteNotFoundException("Route Not Found") ;
