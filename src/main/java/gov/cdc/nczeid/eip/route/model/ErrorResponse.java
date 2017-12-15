@@ -15,7 +15,7 @@ public class ErrorResponse {
     private String path;
     private String exception;
     
-    private Object[] details;
+    private Object[] details = {};
     
     public ErrorResponse() {
     	 this.timestamp = ZonedDateTime.now().format(DateTimeFormatter.ISO_INSTANT);

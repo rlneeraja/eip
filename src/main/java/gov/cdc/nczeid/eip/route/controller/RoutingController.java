@@ -154,8 +154,8 @@ public class RoutingController {
 	       	return ResponseEntity.status(HttpStatus.CREATED).body(r);
     	}
     	else{
-    		ErrorResponse error = new ErrorResponse( ERROR_CODES.BAD_REQUEST, "Route already exist and can not be created", request.getRequestURL().toString() , 409, "");
-       	    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    		ErrorResponse error = new ErrorResponse( ERROR_CODES.CONFLICT, "Route already exist and can not be created", request.getRequestURL().toString() , 409, "");
+       	    return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     	}
     		
     }
