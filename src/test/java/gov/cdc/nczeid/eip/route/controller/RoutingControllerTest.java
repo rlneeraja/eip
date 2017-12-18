@@ -106,6 +106,7 @@ public class RoutingControllerTest {
     @Test
     public void testUpdateRoute() {
     	 Route route = LoadJson.readJson("updateRoute.txt");
+    	 route.setRouteId(java.util.UUID.randomUUID().toString());
          route = repo.save(route);
          route = repo.findByRouteId(route.getRouteId());
          route.setCondition("222");
@@ -155,6 +156,7 @@ public class RoutingControllerTest {
     @Rollback(true)
     public void testDelete() {
     	 Route route = LoadJson.readJson("deleteRoute.txt");
+    	 route.setRouteId(java.util.UUID.randomUUID().toString());
          route = repo.save(route);
          route = repo.findByRouteId(route.getRouteId());
           Response responseDel = when().put(this.rootAPIIURL + "/route/" + route.getRouteId() + "?userSuppliedVersion=" + route.getVersion() )
