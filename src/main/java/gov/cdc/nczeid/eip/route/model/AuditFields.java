@@ -12,8 +12,10 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -38,6 +40,7 @@ public abstract class AuditFields {
 	@ApiModelProperty(hidden=true, position=91)
 	@CreatedDate
 	@Column (name="created_datetime",nullable = false, length = 75, updatable= false)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd@HH:mm:ss.SSSZ")
 	private Date createdTime;
 	
 	@ApiModelProperty(hidden=true, position=92)
@@ -47,6 +50,7 @@ public abstract class AuditFields {
 	
 	@ApiModelProperty(hidden=true, position=93)
 	@LastModifiedDate
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd@HH:mm:ss.SSSZ")
 	@Column (name="update_datetime")
 	private Date updatedTime;
 	

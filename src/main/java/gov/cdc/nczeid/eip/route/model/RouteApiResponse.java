@@ -9,7 +9,7 @@ import lombok.Data;
 public class RouteApiResponse {
     private List queName;
     private String  mguid;
-    private String message = "Successfuly Routed";
+    private String message = "Successfully Routed";
 
     public RouteApiResponse() {
     }
