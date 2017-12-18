@@ -7,6 +7,14 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.joda.time.format.ISODateTimeFormat;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -19,17 +27,13 @@ import java.util.UUID;
 
 
 @Data
-@Entity
-@Table(name="Route")
-public class Route {
+@Entity(name="Route")
+@JsonPropertyOrder({"code","name","active","createdBy","createdTime","updatedBy","updatedTime","version"})
+public class Route extends AuditFields{
 	
     @Id
-    @ApiModelProperty(hidden=true, position=89) 
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "uuid2")
     @Column(name="Route_id", nullable = false, unique = true)
-    private UUID routeId;
-    
+    private String routeId;
     
     @ApiModelProperty(required=true, value="Condition Code", example="10001", position=2) 
     @NotEmpty(message="Condition can not be empty")
@@ -45,28 +49,4 @@ public class Route {
     @ApiModelProperty(required=true, hidden=true, position=95)
     private Integer active = 1;
     
-    @Column(name="created_datetime")
-    @CreationTimestamp
-	@ApiModelProperty(hidden=true, position=90)
-    private Date createdDateTime;
-    
-    @UpdateTimestamp
-	@ApiModelProperty(hidden=true, position=91)
-    @Column(name="update_datetime")
-    private Date updateDateTime;
-    
-	@ApiModelProperty(hidden=true, position=92)
-    @Column(name="created_by")
-    private String createdBy = "EIP_ROUTING_SERVICE";
-    
-	@ApiModelProperty(hidden=true, position=93)
-    @Column(name="updated_by")
-    private String updatedBy = "EIP_ROUTING_SERVICE";
-	
-	@ApiModelProperty(hidden=true, position=94)
-    @Version
-    @Column(name="version", columnDefinition = "integer DEFAULT 0", nullable = false)
-    private long version = 0L;
-    
-
 }

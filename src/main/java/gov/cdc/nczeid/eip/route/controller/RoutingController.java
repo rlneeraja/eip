@@ -110,7 +110,7 @@ public class RoutingController {
     	}
     )
     @RequestMapping(value="/route/{routeId}", method = GET)
-    public ResponseEntity getRoute(@PathVariable UUID routeId,HttpServletRequest request) throws MethodArgumentNotValidException, Exception, RouteNotFoundException{
+    public ResponseEntity getRoute(@PathVariable String routeId,HttpServletRequest request) throws MethodArgumentNotValidException, Exception, RouteNotFoundException{
         Route route = routingService.findByRouteId(routeId);
         if(route == null) 
 			throw new RouteNotFoundException("Route Not Found") ;
@@ -150,6 +150,7 @@ public class RoutingController {
     	Iterable<Route> existingRoute = routingService.findByConditionAndDestination(route.getCondition(), route.getDestination());
     	long size = existingRoute.spliterator().getExactSizeIfKnown();
     	if(route.getRouteId() == null && size == 0 ){
+    		route.setRouteId(java.util.UUID.randomUUID().toString());
     		Route r = routingService.save(route);
 	       	return ResponseEntity.status(HttpStatus.CREATED).body(r);
     	}
@@ -192,7 +193,7 @@ public class RoutingController {
     	}
     )
     @RequestMapping(value = "/route/{routeId}", method = PUT)
-    public ResponseEntity delete(@PathVariable UUID routeId, @RequestParam(value = "userSuppliedVersion") Long userSuppliedVersion,HttpServletRequest request) throws MethodArgumentNotValidException, Exception, RouteNotFoundException {
+    public ResponseEntity delete(@PathVariable String routeId, @RequestParam(value = "userSuppliedVersion") Long userSuppliedVersion,HttpServletRequest request) throws MethodArgumentNotValidException, Exception, RouteNotFoundException {
     		Route route = routingService.findByRouteId(routeId);
     		if(route == null) 
     				throw new RouteNotFoundException("Route Not Found") ;
