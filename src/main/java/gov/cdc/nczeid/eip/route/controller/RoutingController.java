@@ -149,7 +149,7 @@ public class RoutingController {
     public ResponseEntity create(@Valid @RequestBody Route route, HttpServletRequest request)  throws  Exception{
     	Iterable<Route> existingRoute = routingService.findByConditionAndDestination(route.getCondition(), route.getDestination());
     	long size = existingRoute.spliterator().getExactSizeIfKnown();
-    	if(route.getRouteId() == null && size == 0 ){
+    	if(size == 0 ){
     		route.setRouteId(java.util.UUID.randomUUID().toString());
     		Route r = routingService.save(route);
 	       	return ResponseEntity.status(HttpStatus.CREATED).body(r);
@@ -177,7 +177,7 @@ public class RoutingController {
 	       	 	Route r = routingService.save(route);
 	       	 	if(route == null) 
 	       	 		throw new RouteNotFoundException("Route Not Found") ;
-		        return ResponseEntity.status(HttpStatus.OK).body(r);
+	       	 	return ResponseEntity.status(HttpStatus.OK).body(r);
     		
     }
     
