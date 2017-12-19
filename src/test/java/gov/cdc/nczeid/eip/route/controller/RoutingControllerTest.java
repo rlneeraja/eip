@@ -68,6 +68,7 @@ public class RoutingControllerTest {
   @Test
   public void testCreateRoute() {
         Route route = LoadJson.readJson("createRoute.txt");
+   	 	route.setRouteId(java.util.UUID.randomUUID().toString());
         given()
                 .contentType(APPLICATION_JSON)
                 .body(route)
@@ -83,6 +84,7 @@ public class RoutingControllerTest {
     @Test
     public void testCreateDuplicate() throws Exception {
     	 Route route = LoadJson.readJson("createRoute.txt");
+    	 route.setRouteId(java.util.UUID.randomUUID().toString());
          given()
                  .contentType(APPLICATION_JSON)
                  .body(route)
@@ -97,8 +99,7 @@ public class RoutingControllerTest {
                  .when()
                  .post(this.rootAPIIURL + "/route")
                  .then()
-                // .statusCode(409);
-                 .statusCode(400);
+                 .statusCode(409);
          route = repo.findByConditionAndDestination(route.getCondition(), route.getDestination()).iterator().next();
          repo.delete(route);
     }
@@ -134,17 +135,16 @@ public class RoutingControllerTest {
     // Tests for getby rguid
     @Test
     public void testRetrieveRouteByID() {
-        Response response = when().get(this.rootAPIIURL + "/route/bde3140d-8fdf-4034-b683-00c782648ded")
+        Response response = when().get(this.rootAPIIURL + "/route/B777E9E1-26BF-480C-8C5C-FE8E9FBA826E")
                 .then()
                 .statusCode(200)
                 .extract().response();
          response.body().prettyPrint();
     }
     
-    
-    @Test
+   // @Test
     public void testRetrieveRouteByIDNotFound() {
-        Response response = when().get(this.rootAPIIURL + "/route/YYYYYYYYYS")
+        Response response = when().get(this.rootAPIIURL + "/route/YYYY")
                 .then()
                 .statusCode(400)
                 .extract().response();

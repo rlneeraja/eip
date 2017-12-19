@@ -1,5 +1,5 @@
  {
-    "condition": "242",
+    "condition": "25550",
     "destination": "test junit",
     "active": "1",
     "createdDateTime": "2012-04-23T18:25:43.511Z",
